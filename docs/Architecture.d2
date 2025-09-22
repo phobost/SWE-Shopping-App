@@ -1,0 +1,70 @@
+direction: right
+
+Client: {
+  label: "Client\n(Web Browser)"
+  shape: cylinder
+}
+
+User: {
+  label: "Customer"
+  shape: person
+}
+
+Admin: {
+  label: "Administrator"
+  shape: person
+}
+
+ProductOwner: {
+  label: "Product Owner"
+  shape: person
+}
+
+Frontend: {
+  shape: rectangle
+  label: "Frontend\n(React, TypeScript)"
+
+  "src/": {
+    "App.tsx": {
+      label: "App.tsx\n(Entry Point)"
+    }
+    "index.tsx"
+    "components/"
+    "pages/"
+    etc
+  }
+  etc
+}
+
+Backend: {
+  shape: rectangle
+  label: "Backend\n(Python)"
+
+  "app.py": {
+    label: "app.py\n(API Router)"
+    shape: rectangle
+  }
+
+  "services/": {
+    "auth_service.py"
+    "product_service.py"
+    "cart_service.py"
+    etc
+  }
+  etc
+}
+
+Database: {
+  label: "SQLite Database"
+  shape: cylinder
+}
+
+# Connections
+Client -> Frontend."src/"."App.tsx": "Renders UI"
+
+User -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Customer access)"
+Admin -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Admin access)"
+ProductOwner -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Product Owner access)"
+
+Frontend -> Backend: "API Calls"
+Backend -> Database: "Read/Write"

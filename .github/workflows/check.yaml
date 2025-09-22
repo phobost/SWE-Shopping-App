@@ -1,0 +1,11 @@
+name: "Check"
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v5
+      - run: nix flake check
