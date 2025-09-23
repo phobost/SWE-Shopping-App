@@ -6,6 +6,7 @@
     twitter-color-emoji
     nerd-fonts.symbols-only
     vista-fonts
+    ibm-plex
   ],
 }:
 
