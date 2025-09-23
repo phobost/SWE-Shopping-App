@@ -1,11 +1,28 @@
 {
   pkgs,
+  architecture,
   fonts ? with pkgs; [
-    liberation_ttf
+    roboto
+    twitter-color-emoji
+    nerd-fonts.symbols-only
+    vista-fonts
   ],
 }:
 
-let
-  proposal-file = ../../../../docs/proposal/proposal.typ;
-in
-(import ../lib.nix { inherit pkgs; }).compileTypstFile proposal-file fonts
+pkgs.stdenvNoCC.mkDerivation {
+  name = "Compile proposal";
+  src = ../../../../docs/proposal;
+  buildInputs = [
+    pkgs.typst
+  ];
+  TYPST_FONT_PATHS = pkgs.lib.concatStringsSep ":" fonts;
+  buildPhase = ''
+    cp "${architecture}/arch.svg" assets/architecture-diagram.svg
+    typst compile *.typ proposal.pdf;
+  '';
+  installPhase = ''
+    mkdir -p "$out"
+    rm -rf "$out/*" | true
+    cp proposal.pdf $out/
+  '';
+}

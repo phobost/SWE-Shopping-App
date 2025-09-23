@@ -6,7 +6,9 @@
 let
   callPackage = lib.callPackageWith (pkgs // packages);
   packages = {
-    proposal = callPackage ./proposal/package.nix { };
+    proposal = callPackage ./proposal/package.nix {
+      architecture = packages.architecture;
+    };
     architecture = callPackage ./architecture/package.nix { };
   };
   all = pkgs.symlinkJoin {

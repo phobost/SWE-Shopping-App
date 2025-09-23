@@ -18,7 +18,7 @@ stdenvNoCC.mkDerivation {
     cp "${arch-file}" arch.d2
   '';
   buildPhase = ''
-    d2 arch.d2;
+    d2 arch.d2 arch.svg;
   '';
   installPhase = ''
     mkdir -p "$out"
