@@ -208,7 +208,7 @@ The site will allow vendors to create product listings and upload products to th
 
 In addition, the site will have administrators capable of modifying products, orders, listings, users, as well as create discounts, and see histories of customers and their orders.
 
-We intend to make the site capable of dynamically searching through the available product catalogue in real time using full text search modules available in most modern databases. This project will ideally leverage modern best-practices for Continous Integration/Continous Delivery (CI/CD) to ensure the quality of the final product and improve overall development velocity.
+We intend to make the site capable of dynamically searching through the available product catalogue in real time using full text search modules available in most modern databases. This project will ideally leverage modern best-practices for Continuous Integration/Continuous Delivery (CI/CD) to ensure the quality of the final product and improve overall development velocity.
 
 
 = Selected Technologies
@@ -233,7 +233,7 @@ On the frontend side, React was the chosen framework to ensure we had dynamicall
 #pagebreak()
 = Group Familiarity With Technologies
 
-Sqlite is somewhat unfamiliar for members of the group, but since it supports the majority of the SQL standard previous skills working with MySQL are largely transferrable to working with Sqlite.
+Sqlite is somewhat unfamiliar for members of the group, but since it supports the majority of the SQL standard previous skills working with MySQL are largely transferable to working with Sqlite.
 
 Everyone in the group has had some prior experience with Python, varying from using it once or twice in courses to using it as part of prior jobs to accomplish business goals. Only two of our group members have created HTTP APIs before in any language and thus FastAPI is somewhat unfamiliar to this group. Despite that, we believe that the documentation and industry usage of the framework will provide plenty of examples and other resources to support our usage of the framework.
 
@@ -279,7 +279,7 @@ The entire group had extremely limited experience working with any frontend tech
 - Christian: Create a rudimentary database that will be improved upon
 - Joseph: Set-up front end foundation
 - Dan: Learn how to apply and create an authentication service
-- Matthew: Begin workign on the image storage service
+- Matthew: Begin working on the image storage service
 
 = Challenges and Constraints
 An obvious challenge for this project is the introduction and use of different database and front end technologies. As most of the group has varying levels of comfortability and experience with these different technologies, being able to communicate intricacies of each technology while working on the project will prove to be a difficult challenge on top of learning the new technologies.
