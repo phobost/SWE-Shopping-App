@@ -1,23 +1,25 @@
-direction: right
-
-Client: {
-  label: "Client\n(Web Browser)"
-  shape: cylinder
+vars: {
+  d2-config: {
+    # layout-engine: elk
+    theme-id: 200
+  }
 }
 
-User: {
-  label: "Customer"
-  shape: person
-}
+Clients: {
+  Admin: {
+    label: "Administrator"
+    shape: person
+  }
 
-Admin: {
-  label: "Administrator"
-  shape: person
-}
+  Client: {
+    label: "Client\n(Web Browser)"
+    shape: cylinder
+  }
 
-ProductOwner: {
-  label: "Product Owner"
-  shape: person
+  User: {
+    label: "Customer"
+    shape: person
+  }
 }
 
 Frontend: {
@@ -25,6 +27,7 @@ Frontend: {
   label: "Frontend\n(React, TypeScript)"
 
   "src/": {
+    grid-rows: 2
     "App.tsx": {
       label: "App.tsx\n(Entry Point)"
     }
@@ -33,38 +36,32 @@ Frontend: {
     "pages/"
     etc
   }
-  etc
 }
 
-Backend: {
-  shape: rectangle
-  label: "Backend\n(Python)"
+Backend: Backend {
+  # grid-columns: 1
+  Router: app.py\n(API Router)
 
-  "app.py": {
-    label: "app.py\n(API Router)"
-    shape: rectangle
-  }
+  Router -> Services: Routes requests to
 
-  "services/": {
-    "auth_service.py"
-    "product_service.py"
-    "cart_service.py"
-    etc
+  Services: {
+    grid-rows: 2
+    grid-columns: 3
+    Authentication Service
+    Product Service
+    Cart Service
+    Checkout Service
+    Product Page Service
+    Image Storage Service
   }
-  etc
 }
 
-Database: {
-  label: "SQLite Database"
+Database: SQLite Database {
   shape: cylinder
 }
 
-# Connections
-Client -> Frontend."src/"."App.tsx": "Renders UI"
-
-User -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Customer access)"
-Admin -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Admin access)"
-ProductOwner -> Frontend."src/"."App.tsx": "Interacts with UI\n(via Product Owner access)"
+# Primary Connections
+Clients -> Frontend: "Renders UI"
 
 Frontend -> Backend: "API Calls"
-Backend -> Database: "Read/Write"
+Backend.Services -> Database: "Read/Write"
