@@ -6,6 +6,6 @@
 }:
 
 let
-  proposal-file = ../../../../docs/proposal.typ;
+  proposal-file = ../../../../docs/proposal/proposal.typ;
 in
 (import ../lib.nix { inherit pkgs; }).compileTypstFile proposal-file fonts
