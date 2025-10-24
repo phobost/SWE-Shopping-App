@@ -10,6 +10,7 @@ let
       architecture = packages.architecture;
     };
     architecture = callPackage ./architecture/package.nix { };
+    project = callPackage ./project/package.nix { };
   };
   all = pkgs.symlinkJoin {
     name = "docs";

@@ -20,13 +20,9 @@
       devShells = clib.eachSystem (pkgs: {
         default = pkgs.mkShell {
           packages = with pkgs; [
-            age
-            bash
-            # whatever packages we need
+            nix
+            zsh
           ];
-          shellHook = ''
-            # Some script maybe
-          '';
         };
       });
     };
