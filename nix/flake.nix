@@ -20,20 +20,12 @@
         pkgs:
         let
           cpkgs = (import ./pkgs { inherit pkgs; });
-          # We want to prefix the package names to make it clear what specific package they are
-          #
-          # For example if the package comes from the `docs` packages then it should be prefixed with `doc-`
-          allPkgs = lib.foldlAttrs (
-            acc: prefix: value:
-            let
-              prefixedPkg = lib.attrsets.mapAttrs' (
-                pkgName: pkgValue: lib.attrsets.nameValuePair "${prefix}-${pkgName}" pkgValue
-              ) value;
-            in
-            acc // prefixedPkg
-          ) { } cpkgs;
+          docs = lib.attrsets.mapAttrs' (
+            pkgName: pkgVal: lib.attrsets.nameValuePair "docs-${pkgName}" pkgVal
+          ) cpkgs.docs;
+          frontend = pkgs.callPackage ../src/frontend/nix/package.nix { };
         in
-        allPkgs
+        { frontend = frontend; } // docs
       );
       formatter = clib.eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
       checks = clib.eachSystem (pkgs: {
