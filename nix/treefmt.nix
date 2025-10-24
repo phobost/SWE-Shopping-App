@@ -7,4 +7,5 @@
   programs.yamlfmt.enable = true;
   programs.typstyle.enable = true;
   programs.d2.enable = true;
+  programs.prettier.enable = true;
 }
