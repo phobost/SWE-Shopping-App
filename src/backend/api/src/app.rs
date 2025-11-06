@@ -18,18 +18,14 @@ use tower_http::{
 };
 use tracing::Span;
 use utoipa::OpenApi;
+use utoipa_axum::router::OpenApiRouter;
+use utoipa_swagger_ui::SwaggerUi;
 use uuid::Uuid;
 
 pub struct Application {}
 
 #[derive(OpenApi)]
-#[openapi(
-    info(),
-    nest (
-        (path = "/v1", api = crate::routes::v1::ApiDoc),
-
-    )
-)]
+#[openapi(info())]
 struct ApiDoc;
 
 #[derive(Debug)]
@@ -104,13 +100,16 @@ impl Application {
     pub fn router() -> Router {
         let header_x_request_id = HeaderName::from_static("x-request-id");
 
-        Router::new()
-            .merge(
-                utoipa_swagger_ui::SwaggerUi::new("/swagger-ui")
-                    .url("/api-docs/openapi.json", ApiDoc::openapi()),
-            )
-            .route("/", get(|| async { Redirect::permanent("/swagger-ui") }))
+        let (router, api) = OpenApiRouter::with_openapi(ApiDoc::openapi())
             .nest("/v1", crate::routes::v1::router())
+            .split_for_parts();
+
+        router
+            .merge(SwaggerUi::new("/docs").url("/docs/openapi.json", api.clone()))
+            .route(
+                "/",
+                get(|| async { Redirect::permanent("/docs/swagger-ui") }),
+            )
             .layer(TimeoutLayer::new(Duration::from_secs(30)))
             .layer(
                 ServiceBuilder::new()

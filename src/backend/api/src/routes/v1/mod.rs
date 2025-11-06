@@ -1,17 +1,11 @@
-use axum::{Router, routing::get};
-use utoipa::OpenApi;
+use utoipa_axum::{router::OpenApiRouter, routes};
 
 pub mod health;
+pub mod md2html;
 
-#[derive(OpenApi)]
-#[openapi(
-    tags(
-        (name = "v1")
-    ),
-    paths(crate::routes::v1::health::health)
-)]
-pub struct ApiDoc;
-
-pub fn router() -> Router {
-    Router::new().route("/health", get(crate::routes::v1::health::health))
+pub fn router() -> OpenApiRouter {
+    OpenApiRouter::new().routes(routes!(
+        crate::routes::v1::health::health,
+        crate::routes::v1::md2html::md2html
+    ))
 }
