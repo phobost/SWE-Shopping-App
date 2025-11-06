@@ -4,6 +4,7 @@
 {
   projectRootFile = ".git/config";
   programs.nixfmt.enable = true;
+  programs.rustfmt.enable = true;
   programs.yamlfmt.enable = true;
   programs.typstyle.enable = true;
   programs.d2.enable = true;

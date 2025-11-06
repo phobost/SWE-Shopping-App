@@ -25,5 +25,6 @@
           ];
         };
       });
+      nixosModules = inputs.ext.nixosModules;
     };
 }
