@@ -4,6 +4,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
+
   outputs =
     inputs@{
       self,
@@ -25,11 +26,26 @@
           ) cpkgs.docs;
           frontend = pkgs.callPackage ../src/frontend/nix/package.nix { };
         in
-        { frontend = frontend; } // docs
+        {
+          frontend = frontend;
+          backend = inputs.backend.packages.${pkgs.stdenv.hostPlatform.system}.default;
+        }
+        // docs
       );
-      formatter = clib.eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
-      checks = clib.eachSystem (pkgs: {
-        formatting = treefmtEval.${pkgs.system}.config.build.check self;
-      });
+      formatter = clib.eachSystem (
+        pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper
+      );
+      checks = clib.eachSystem (
+        pkgs:
+        {
+          formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+        }
+        // (lib.attrsets.mapAttrs' (
+          name: value: (lib.attrsets.nameValuePair "phobost-backend-${name}" value)
+        ) inputs.backend.checks.${pkgs.stdenv.hostPlatform.system})
+      );
+      nixosModules = {
+        phobost-api = inputs.backend.nixosModules.phobost;
+      };
     };
 }
