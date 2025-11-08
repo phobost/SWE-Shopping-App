@@ -7,7 +7,6 @@
 
   outputs =
     inputs@{
-      self,
       nixpkgs,
       ...
     }:
@@ -38,7 +37,7 @@
       checks = clib.eachSystem (
         pkgs:
         {
-          formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
+          formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check ../.;
         }
         // (lib.attrsets.mapAttrs' (
           name: value: (lib.attrsets.nameValuePair "phobost-backend-${name}" value)
