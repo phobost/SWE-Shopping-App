@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build && tsc --build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "@tanstack/react-router": "^1.132.0",
+    "@tanstack/router-plugin": "^1.132.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
