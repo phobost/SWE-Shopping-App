@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["dist", "routeTree.gen.ts"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
@@ -16,8 +16,14 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2022,
       globals: globals.browser,
+    },
+  },
+  {
+    rules: {
+      // Prefer double quotes
+      quotes: ["error", "double"],
     },
   },
 ]);
