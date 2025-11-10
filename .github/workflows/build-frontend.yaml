@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Build
-        run: nix build '.#frontend'
+        run: nix --accept-flake-config build '.#frontend'
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
