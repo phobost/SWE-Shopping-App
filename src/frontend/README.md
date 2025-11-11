@@ -20,7 +20,6 @@ Based on a great template [here](https://github.com/connorp987/vite-firebase-tan
 2. Setup Firebase
 
   - Ensure you've logged in with Firebase: `firebase login`
-  - Copy `.env.example` to `.env.local`
   - Start local Firebase emulators
 
     ```bash
