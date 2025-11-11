@@ -2,6 +2,7 @@
   buildNpmPackage,
   importNpmLock,
   nodejs_latest,
+  doCheck ? false,
 }:
 let
   src = ../.;
@@ -16,6 +17,10 @@ buildNpmPackage {
     npmRoot = src;
   };
   npmConfigHook = importNpmLock.npmConfigHook;
+  inherit doCheck;
+  checkPhase = ''
+    npm run lint
+  '';
 
   installPhase = ''
     mkdir -p "$out/share"

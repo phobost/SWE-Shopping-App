@@ -9,7 +9,7 @@
     "emulators:export": "firebase emulators:start --import=./.ignore/firebase-emulator-data --export-on-exit",
     "build": "vite build && tsc --build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -29,18 +29,19 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@tailwindcss/postcss": "^4.1.14",
     "@tanstack/react-router-devtools": "^1.130.13",
     "@tanstack/router-plugin": "^1.116.1",
     "@tanstack/router-vite-plugin": "^1.116.1",
+    "@tsconfig/recommended": "^1.0.12",
     "@types/node": "^20.11.26",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.0",
     "@vitejs/plugin-react": "^5.0.4",
-    "@eslint/js": "^9.36.0",
-    "eslint": "^8.56.0",
+    "eslint": "^9",
     "eslint-plugin-react-hooks": "^7.0.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "postcss": "^8.4.38",
@@ -48,7 +49,8 @@
     "postcss-simple-vars": "^7.0.1",
     "tailwindcss": "^4.1.14",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
     "vite": "^7.1.9"
   }
 }

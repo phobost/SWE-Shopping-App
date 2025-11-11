@@ -10,7 +10,7 @@ const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   context: {
-    user: undefined!, // This will be set after we wrap the app in an AuthProvider
+    user: undefined, // This will be set after we wrap the app in an AuthProvider
   },
 });
 
@@ -21,11 +21,13 @@ declare module "@tanstack/react-router" {
   }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function InnerApp() {
   const user = useAuthContext();
   return <RouterProvider router={router} context={{ user }} />;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="theme-preference">
@@ -36,6 +38,7 @@ function App() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const rootElement = document.getElementById("app")!;
 
 if (!rootElement.innerHTML) {
