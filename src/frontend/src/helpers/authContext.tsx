@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig";
@@ -25,6 +24,7 @@ const AuthContext = React.createContext<AuthContextType>({
   loading: true,
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () =>
   React.useContext<AuthContextType>(AuthContext);
 
@@ -74,7 +74,7 @@ export const AuthContextProvider = ({
         unsubscribeFirestore();
       }
     };
-  }, [user?.uid]);
+  }, [user?.displayName, user?.email, user?.photoURL, user?.uid]);
 
   return (
     <AuthContext.Provider value={{ user, userData, loading }}>

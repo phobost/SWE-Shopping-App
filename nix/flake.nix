@@ -38,6 +38,9 @@
         pkgs:
         {
           formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check ../.;
+          frontend = pkgs.callPackage ../src/frontend/nix/package.nix {
+            doCheck = true;
+          };
         }
         // (lib.attrsets.mapAttrs' (
           name: value: (lib.attrsets.nameValuePair "phobost-backend-${name}" value)
