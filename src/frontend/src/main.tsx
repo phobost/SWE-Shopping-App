@@ -1,36 +1,45 @@
-import { RouterProvider, createRouter } from "@tanstack/react-router";
-import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-
-// Import the generated route tree
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { AuthContextProvider, useAuthContext } from "./helpers/authContext";
+import { ThemeProvider } from "./components/theme-provider";
+import "./index.css";
 
-import "./main.css";
-
-// Create a new router instance
+// Set up a Router instance
 const router = createRouter({
   routeTree,
-  context: {},
   defaultPreload: "intent",
-  scrollRestoration: true,
-  defaultStructuralSharing: true,
-  defaultPreloadStaleTime: 0,
+  context: {
+    user: undefined!, // This will be set after we wrap the app in an AuthProvider
+  },
 });
 
-// Register the router instance for type safety
+// Register things for typesafety
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
   }
 }
 
-// Render the app
-const rootElement = document.getElementById("root");
-if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>,
+function InnerApp() {
+  const user = useAuthContext();
+  return <RouterProvider router={router} context={{ user }} />;
+}
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="theme-preference">
+      <AuthContextProvider>
+        <InnerApp />
+      </AuthContextProvider>
+    </ThemeProvider>
   );
+}
+
+const rootElement = document.getElementById("app")!;
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+
+  root.render(<App />);
 }

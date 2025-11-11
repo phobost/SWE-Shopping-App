@@ -26,3 +26,9 @@ dist-ssr
 # Ignore Tanstack router generated outputs
 src/routeTree.gen.ts
 .tanstack
+
+# Ignore local `.env` file, see https://vite.dev/guide/env-and-mode#env-files
+.env.local
+.env.*.local
+
+.ignore
