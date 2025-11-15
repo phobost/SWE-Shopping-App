@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/products/$productId")({
+export const Route = createFileRoute("/products/id/$productId")({
   component: ProductDetails,
 });
 
@@ -13,8 +13,6 @@ const PRODUCT_DATA = {
     emoji: "🌑",
     shortDescription:
       "Straight from the Sea of Tranquility. Certified* authentic (*by us).",
-    longDescription:
-      "This premium lunar sample is perfect for desk displays, conversation starters, and pretending you're a space billionaire. Do not attempt to eat, skip across a pond, or use as fuel.",
   },
   "coende-crunch-alden": {
     name: "Coende Crunch Alden",
@@ -22,8 +20,6 @@ const PRODUCT_DATA = {
     emoji: "👽",
     shortDescription:
       "Snacks that taste like chicken... if chicken were neon green and crunchy.",
-    longDescription:
-      "Beloved across three galaxies, Coende Crunch Alden is the ultimate late-night study snack. Slightly radioactive *vibes* only. Zero actual radiation, we promise.",
   },
   "bottle-of-stardust": {
     name: "Bottle of Stardust",
@@ -31,8 +27,6 @@ const PRODUCT_DATA = {
     emoji: "✨",
     shortDescription:
       "For sprinkling on your cereal or wishing upon. Contains glitter.",
-    longDescription:
-      "Each bottle is filled with shimmering particulate matter that definitely, probably, almost came from a star. Excellent for decor, magical rituals (cosplay), or mood lighting.",
   },
   "plutos-pet-plushle": {
     name: "Pluto's Pet Plushle",
@@ -40,8 +34,6 @@ const PRODUCT_DATA = {
     emoji: "🐕",
     shortDescription:
       "The fluffiest, coldest dog in the Kuiper Belt. Hypoallergenic*.",
-    longDescription:
-      "Plushle is the loyal guardian of your pillow fort and a certified good space dog. Loves low-gravity cuddles and long walks on dwarf planets.",
   },
 } as const;
 
@@ -82,9 +74,6 @@ function ProductDetails() {
           <h1 className="text-4xl font-bold">{product.name}</h1>
           <p className="text-lg text-muted-foreground">
             {product.shortDescription}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {product.longDescription}
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
