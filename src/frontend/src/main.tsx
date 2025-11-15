@@ -4,6 +4,7 @@ import { routeTree } from "./routeTree.gen";
 import { AuthContextProvider, useAuthContext } from "./helpers/authContext";
 import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
+import { ProductsProvider } from "./helpers/product/context";
 
 // Set up a Router instance
 const router = createRouter({
@@ -32,7 +33,9 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="theme-preference">
       <AuthContextProvider>
-        <InnerApp />
+        <ProductsProvider>
+          <InnerApp />
+        </ProductsProvider>
       </AuthContextProvider>
     </ThemeProvider>
   );
