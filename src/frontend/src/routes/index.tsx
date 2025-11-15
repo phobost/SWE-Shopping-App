@@ -17,7 +17,8 @@ function Index() {
           🚀 Blast Off to Savings!
         </h1>
         <p className="text-2xl text-muted-foreground max-w-2xl mx-auto">
-          Explore the cosmos of cool stuff! We've got the galaxy's beat deals on Moon Rocks, Alien Snacks, and genuine Stardust.
+          Explore the cosmos of cool stuff! We've got the galaxy's beat deals on
+          Moon Rocks, Alien Snacks, and genuine Stardust.
         </p>
       </div>
 
@@ -37,7 +38,10 @@ function Index() {
               <Link to="/checkout">Buy Now</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link to="/products/$productId" params={{ productId: "moon-rock" }}>
+              <Link
+                to="/products/$productId"
+                params={{ productId: "moon-rock" }}
+              >
                 Details
               </Link>
             </Button>
@@ -58,7 +62,10 @@ function Index() {
               <Link to="/checkout">Buy Now</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link to="/products/$productId" params={{ productId: "coende-crunch-alden" }}>
+              <Link
+                to="/products/$productId"
+                params={{ productId: "coende-crunch-alden" }}
+              >
                 Details
               </Link>
             </Button>
@@ -79,7 +86,10 @@ function Index() {
               <Link to="/checkout">Buy Now</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link to="/products/$productId" params={{ productId: "bottle-of-stardust" }}>
+              <Link
+                to="/products/$productId"
+                params={{ productId: "bottle-of-stardust" }}
+              >
                 Details
               </Link>
             </Button>
@@ -100,7 +110,10 @@ function Index() {
               <Link to="/checkout">Buy Now</Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link to="/products/$productId" params={{ productId: "plutos-pet-plushle" }}>
+              <Link
+                to="/products/$productId"
+                params={{ productId: "plutos-pet-plushle" }}
+              >
                 Details
               </Link>
             </Button>
@@ -123,7 +136,9 @@ function Index() {
           </div>
         ) : (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Where the deals are truly out of this world!</h2>
+            <h2 className="text-2xl font-semibold">
+              Where the deals are truly out of this world!
+            </h2>
             <Button asChild>
               <Link to="/settings">Go to Settings</Link>
             </Button>
@@ -167,11 +182,7 @@ function ProductCard({
       <div className="text-3xl">{icon}</div>
       <h3 className="font-semibold text-lg">{title}</h3>
       <p className="text-sm text-muted-foreground">{description}</p>
-      {children && (
-        <div className="pt-4">
-          {children}
-        </div>
-      )}
+      {children && <div className="pt-4">{children}</div>}
     </div>
   );
 }
