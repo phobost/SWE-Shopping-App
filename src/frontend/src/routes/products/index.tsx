@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
+import { useProducts } from "@/helpers/product/context";
+import { Product } from "@/types/product";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ReactNode } from "react";
 
@@ -8,22 +10,22 @@ export const Route = createFileRoute("/products/")({
 });
 
 function ProductCard({
-  title,
-  description,
-  icon,
+  product,
   children,
   showAdminEdit,
   editHref,
 }: {
-  title: string;
-  description: string;
-  icon: string;
+  product: Product;
   children?: ReactNode;
   showAdminEdit?: boolean;
   editHref?: string;
 }) {
+  // TODO: Include the image of the product
   return (
-    <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
+    <div
+      key={product.uid}
+      className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2"
+    >
       {showAdminEdit && editHref && (
         <Button
           variant="ghost"
@@ -37,9 +39,11 @@ function ProductCard({
           </Link>
         </Button>
       )}
-      <div className="text-3xl">{icon}</div>
-      <h3 className="font-semibold text-lg">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
+      <h3 className="font-semibold text-lg">
+        {product.name} | ${product.price}
+      </h3>
+      <p className="text-sm text-muted-foreground">{product.description}</p>
+      <p className="text-sm">In Stock: {product.quantityInStock}</p>
       {children && <div className="pt-4">{children}</div>}
     </div>
   );
@@ -48,6 +52,17 @@ function ProductCard({
 function RouteComponent() {
   const { user } = useAuthContext();
   const isAdmin = !!user; // TODO: replace with real admin check when available
+  const { products, loading, error } = useProducts();
+
+  if (loading) {
+    return <div>Loading products...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  console.log("Got products: ", products);
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -56,102 +71,30 @@ function RouteComponent() {
       </div>
 
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <ProductCard
-          title="Genuine Moon Rock ($20.00)"
-          description="Straight from the see of Tranquility. certifiec authentic."
-          icon="🌑"
-          showAdminEdit={isAdmin}
-          editHref="/products-admin"
-        >
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link to="/checkout">Add to Cart</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/checkout">Buy Now</Link>
-            </Button>
-            <Button variant="secondary" asChild>
-              <Link
-                to="/products/id/$productId"
-                params={{ productId: "moon-rock" }}
-              >
-                Details
-              </Link>
-            </Button>
-          </div>
-        </ProductCard>
-        <ProductCard
-          title="Coende Crunch Alden ($5.49)"
-          description="Snacks Toste like chicken... if chioken were neon grean and crunchy."
-          icon="👽"
-          showAdminEdit={isAdmin}
-          editHref="/products-admin"
-        >
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link to="/checkout">Add to Cart</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/checkout">Buy Now</Link>
-            </Button>
-            <Button variant="secondary" asChild>
-              <Link
-                to="/products/id/$productId"
-                params={{ productId: "coende-crunch-alden" }}
-              >
-                Details
-              </Link>
-            </Button>
-          </div>
-        </ProductCard>
-        <ProductCard
-          title="Bottle of Stardust ($29.99)"
-          description="Far sprinkling on your cereal ar wishing upon. Contains glitter."
-          icon="✨"
-          showAdminEdit={isAdmin}
-          editHref="/products-admin"
-        >
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link to="/checkout">Add to Cart</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/checkout">Buy Now</Link>
-            </Button>
-            <Button variant="secondary" asChild>
-              <Link
-                to="/products/id/$productId"
-                params={{ productId: "bottle-of-stardust" }}
-              >
-                Details
-              </Link>
-            </Button>
-          </div>
-        </ProductCard>
-        <ProductCard
-          title="Pluto's Pet Plushle ($12.00)"
-          description="The fluffiest, coldest dog in the Kuiper Balt. Hypoollergenio."
-          icon="🐕"
-          showAdminEdit={isAdmin}
-          editHref="/products-admin"
-        >
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link to="/checkout">Add to Cart</Link>
-            </Button>
-            <Button asChild>
-              <Link to="/checkout">Buy Now</Link>
-            </Button>
-            <Button variant="secondary" asChild>
-              <Link
-                to="/products/id/$productId"
-                params={{ productId: "plutos-pet-plushle" }}
-              >
-                Details
-              </Link>
-            </Button>
-          </div>
-        </ProductCard>
+        {products.map((product) => (
+          <ProductCard
+            product={product}
+            showAdminEdit={isAdmin}
+            editHref="/products-admin"
+          >
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" asChild>
+                <Link to="/checkout">Add to Cart</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/checkout">Buy Now</Link>
+              </Button>
+              <Button variant="secondary" asChild>
+                <Link
+                  to="/products/id/$productId"
+                  params={{ productId: product.uid }}
+                >
+                  Details
+                </Link>
+              </Button>
+            </div>
+          </ProductCard>
+        ))}
       </div>
     </div>
   );
