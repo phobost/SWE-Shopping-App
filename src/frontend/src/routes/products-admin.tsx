@@ -19,7 +19,7 @@ function ProductsAdmin() {
         <AdminProductCard name="Genuine Moon Rock" price="$20.00" />
         <AdminProductCard name="Coende Crunch Alden" price="$5.49" />
         <AdminProductCard name="Bottle of Stardust" price="$29.99" />
-        <AdminProductCard name="Pluto&apos;s Pet Plushle" price="$12.00" />
+        <AdminProductCard name="Pluto's Pet Plushle" price="$12.00" />
       </div>
     </div>
   );
@@ -33,9 +33,7 @@ function AdminProductCard({ name, price }: { name: string; price: string }) {
           <h2 className="font-semibold">{name}</h2>
           <p className="text-sm text-muted-foreground">{price}</p>
         </div>
-        <span className="text-xs rounded-full border px-2 py-1">
-          Draft UI
-        </span>
+        <span className="text-xs rounded-full border px-2 py-1">Draft UI</span>
       </div>
 
       <div className="space-y-2 text-sm text-muted-foreground">
