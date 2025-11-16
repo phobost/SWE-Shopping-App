@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "@/helpers/firebaseConfig";
 import { Product } from "@/types/product";
+import { AddProductToCardButton } from "@/components/cart";
 
 export const Route = createFileRoute("/products/id/$productId")({
   loader: async ({ params }) => {
@@ -56,9 +57,7 @@ function ProductDetails() {
             <Button asChild>
               <Link to="/checkout">Buy Now</Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link to="/checkout">Add to Cart</Link>
-            </Button>
+            <AddProductToCardButton product={product} />
           </div>
         </div>
       </div>
