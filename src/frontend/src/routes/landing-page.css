@@ -1,0 +1,96 @@
+/* Background and font import */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* Color Variables (OLD COLORS)
+:root {
+    --color-space-dark: #1a1a1a;
+    --color-primary: #ffffff;
+    --color-secondary: #000000;
+    --color-accent: #cccccc;
+    --color-border: #4a4a4a;
+    --color-subtitle: #ffffff;
+    --color-hover: rgba(0, 132, 255, 0.12);
+}
+*/
+
+/* Body Style (stars in background)*/
+body {
+    margin: 0;
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 50% 50%, rgba(122, 122, 122, 0.2) 1px, transparent 0);
+    background-size: 50px 50px;
+    background-repeat: repeat;
+}
+
+/* Scroll star background (space between stars) */
+#scroll-star {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -50%) scale(3);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(255,255,255,0.05) 50%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* App container with centered content */
+#app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Title Style */
+.title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 0 0 1rem 0; 
+}
+
+/* Subtitle Style */
+.subtitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-subtitle);
+    margin: 0; /* Resets all margins */
+    margin-bottom: 1rem;
+}
+
+/* Button Style */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    border-radius: 9999px;
+    padding: 1rem 2.5rem;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-hover);
+    transform: scale(1.05);
+}
+
+/* Spaceship Animation for SVG */
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0) rotate(45deg); }
+    50% { transform: translateY(-10px) rotate(45deg); }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s infinite ease-in-out;
+}
