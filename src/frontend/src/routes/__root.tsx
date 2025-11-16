@@ -8,6 +8,7 @@ import { useAuthContext } from "../helpers/authContext";
 import { Toaster } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserNav } from "@/components/user-nav";
+import { Cart } from "@/components/cart";
 
 interface MyRouterContext {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,6 +33,9 @@ function RootComponent() {
           >
             Home
           </Link>{" "}
+          <Link to={"/products"} activeProps={{ className: "font-bold" }}>
+            Products
+          </Link>
           <Link to={"/about"} activeProps={{ className: "font-bold" }}>
             About
           </Link>
@@ -44,6 +48,7 @@ function RootComponent() {
                 Sign In
               </Link>
             )}
+            <Cart />
           </div>
         </div>
       </div>

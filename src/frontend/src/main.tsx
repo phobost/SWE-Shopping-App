@@ -5,6 +5,7 @@ import { AuthContextProvider, useAuthContext } from "./helpers/authContext";
 import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 import { ProductsProvider } from "./helpers/product/context";
+import { CartContextProvider } from "./helpers/cart/context";
 
 // Set up a Router instance
 const router = createRouter({
@@ -34,7 +35,9 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="theme-preference">
       <AuthContextProvider>
         <ProductsProvider>
-          <InnerApp />
+          <CartContextProvider>
+            <InnerApp />
+          </CartContextProvider>
         </ProductsProvider>
       </AuthContextProvider>
     </ThemeProvider>

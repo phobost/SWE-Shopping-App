@@ -1,3 +1,4 @@
+import { AddProductToCardButton } from "@/components/cart";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
@@ -62,8 +63,6 @@ function RouteComponent() {
     return <div>Error: {error}</div>;
   }
 
-  console.log("Got products: ", products);
-
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center space-y-4">
@@ -78,9 +77,7 @@ function RouteComponent() {
             editHref="/products-admin"
           >
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" asChild>
-                <Link to="/checkout">Add to Cart</Link>
-              </Button>
+              <AddProductToCardButton product={product} />
               <Button asChild>
                 <Link to="/checkout">Buy Now</Link>
               </Button>
