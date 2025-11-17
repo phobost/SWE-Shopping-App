@@ -10,7 +10,7 @@ import { useEffect } from "react";
 export const Route = createLazyFileRoute("/signup")({
   // @ts-expect-error beforeLoad is valid but TS doesn't recognize it due to version mismatch
   beforeLoad: ({ context, location }) => {
-    if (!context.user) {
+    if (!context.auth) {
       throw redirect({ to: "/", search: { redirect: location.href } });
     }
   },

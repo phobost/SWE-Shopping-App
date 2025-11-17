@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/")({
   loader: ({ context }) => {
-    if (!context.user?.isAdmin) {
+    if (!context.auth.isAdmin()) {
       throw redirect({ to: "/" });
     }
   },

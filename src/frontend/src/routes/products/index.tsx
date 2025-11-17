@@ -48,8 +48,8 @@ function ProductCard({
 }
 
 function RouteComponent() {
-  const { user } = useAuthContext();
-  const isAdmin = !!user; // TODO: replace with real admin check when available
+  const context = useAuthContext();
+  const isAdmin = context.isAdmin();
   const { products, loading, error } = useProducts();
 
   if (loading) {

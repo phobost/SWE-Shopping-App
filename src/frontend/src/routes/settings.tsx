@@ -35,7 +35,7 @@ const getDefaultAvatarUrl = (name: string) =>
 
 export const Route = createFileRoute("/settings")({
   loader: ({ context }) => {
-    if (!context.user.user) {
+    if (!context.auth.user) {
       throw redirect({ to: "/signin" });
     }
   },

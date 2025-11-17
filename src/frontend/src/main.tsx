@@ -12,7 +12,8 @@ const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   context: {
-    user: undefined, // This will be set after we wrap the app in an AuthProvider
+    // @ts-expect-error This will be set after we wrap the app in an AuthProvider
+    auth: undefined,
   },
 });
 
@@ -25,8 +26,8 @@ declare module "@tanstack/react-router" {
 
 // eslint-disable-next-line react-refresh/only-export-components
 function InnerApp() {
-  const user = useAuthContext();
-  return <RouterProvider router={router} context={{ user }} />;
+  const auth = useAuthContext();
+  return <RouterProvider router={router} context={{ auth }} />;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

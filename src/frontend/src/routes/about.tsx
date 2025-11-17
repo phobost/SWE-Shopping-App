@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/about")({
   loader: ({ context }) => {
-    if (!context.user.user) {
+    if (!context.auth.user) {
       throw redirect({ to: "/signin" });
     }
   },
