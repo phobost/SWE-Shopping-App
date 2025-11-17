@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "outDir": "lib",
+    "rootDir": "../",
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "compileOnSave": true,
+  "include": ["src", "../shared"]
+}

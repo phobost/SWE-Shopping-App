@@ -1,4 +1,4 @@
-name: "Build Frontend"
+name: "Build Frontend Firebase Functions"
 on:
   push:
   workflow_dispatch:
@@ -8,11 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Build
-        run: nix --accept-flake-config build '.#frontend'
+        run: nix --accept-flake-config build '.#frontend-functions'
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: frontend
+          name: frontend-functions
           path: |
             ./result/**/*
             ./result/*

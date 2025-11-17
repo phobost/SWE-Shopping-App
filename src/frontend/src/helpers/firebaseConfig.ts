@@ -3,7 +3,8 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { collection, getDocs, writeBatch, doc } from "firebase/firestore";
-import { Product } from "@/types/product";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import { Product } from "@shared/types/product";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_PUBLIC_FIREBASE_API_KEY,
@@ -20,6 +21,7 @@ export const firebaseApp =
 export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
 export const storage = getStorage(firebaseApp);
+export const functions = getFunctions(firebaseApp);
 
 if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {
   console.log("Using firebase emulators!");
@@ -39,6 +41,11 @@ if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {
     storage,
     host,
     parseInt(import.meta.env.VITE_FIREBASE_STORAGE_EMULATOR_PORT || "9199"),
+  );
+  connectFunctionsEmulator(
+    functions,
+    "127.0.0.1",
+    parseInt(import.meta.env.VITE_FIREBASE_FUNCTIONS_EMULATOR_PORT || "5001"),
   );
 }
 

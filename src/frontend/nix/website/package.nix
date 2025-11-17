@@ -5,7 +5,7 @@
   doCheck ? false,
 }:
 let
-  src = ../.;
+  src = ../../.;
 in
 buildNpmPackage {
   name = "frontend";
