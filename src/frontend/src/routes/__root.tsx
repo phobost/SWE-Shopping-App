@@ -4,18 +4,17 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { useAuthContext } from "../helpers/authContext";
+import { AuthContext, useAuthContext } from "../helpers/authContext";
 import { Toaster } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserNav } from "@/components/user-nav";
 import { Cart } from "@/components/cart";
 
-interface MyRouterContext {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any; //Make this any kind of user type
+interface RouterCtx {
+  auth: AuthContext;
 }
 
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+export const Route = createRootRouteWithContext<RouterCtx>()({
   component: RootComponent,
 });
 
@@ -32,11 +31,11 @@ function RootComponent() {
             activeOptions={{ exact: true }}
           >
             Home
-          </Link>{" "}
-          <Link to={"/products"} activeProps={{ className: "font-bold" }}>
+          </Link>
+          <Link to="/products" activeProps={{ className: "font-bold" }}>
             Products
           </Link>
-          <Link to={"/about"} activeProps={{ className: "font-bold" }}>
+          <Link to="/about" activeProps={{ className: "font-bold" }}>
             About
           </Link>
           <div className="ml-auto flex items-center gap-2">
@@ -44,7 +43,7 @@ function RootComponent() {
             {user ? (
               <UserNav />
             ) : (
-              <Link to={"/signin"} activeProps={{ className: "font-bold" }}>
+              <Link to="/signin" activeProps={{ className: "font-bold" }}>
                 Sign In
               </Link>
             )}
