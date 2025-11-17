@@ -23,10 +23,10 @@
           docs = lib.attrsets.mapAttrs' (
             pkgName: pkgVal: lib.attrsets.nameValuePair "docs-${pkgName}" pkgVal
           ) cpkgs.docs;
-          frontend = pkgs.callPackage ../src/frontend/nix/package.nix { };
         in
         {
-          frontend = frontend;
+          frontend-website = pkgs.callPackage ../src/frontend/nix/website/package.nix { };
+          frontend-functions = pkgs.callPackage ../src/frontend/nix/functions/package.nix { };
           backend = inputs.backend.packages.${pkgs.stdenv.hostPlatform.system}.default;
         }
         // docs
@@ -38,7 +38,10 @@
         pkgs:
         {
           formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check ../.;
-          frontend = pkgs.callPackage ../src/frontend/nix/package.nix {
+          frontend-website = pkgs.callPackage ../src/frontend/nix/website/package.nix {
+            doCheck = true;
+          };
+          frontend-functions = pkgs.callPackage ../src/frontend/nix/functions/package.nix {
             doCheck = true;
           };
         }

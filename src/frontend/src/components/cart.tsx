@@ -12,7 +12,7 @@ import {
 import { useCartContext } from "@/helpers/cart/context";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Product } from "@/types/product";
+import { Product } from "@shared/types/product";
 import { Icons } from "@/components/icons";
 
 export function Cart() {

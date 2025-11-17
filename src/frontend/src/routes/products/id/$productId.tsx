@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { doc, getDoc } from "firebase/firestore";
 import { firestore } from "@/helpers/firebaseConfig";
-import { Product } from "@/types/product";
+import { Product } from "@shared/types/product";
 import { AddProductToCardButton } from "@/components/cart";
 
 export const Route = createFileRoute("/products/id/$productId")({

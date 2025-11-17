@@ -1,0 +1,18 @@
+name: "Build Frontend Website"
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  upload:
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build
+        run: nix --accept-flake-config build '.#frontend-website'
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-website
+          path: |
+            ./result/**/*
+            ./result/*

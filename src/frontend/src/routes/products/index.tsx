@@ -2,7 +2,7 @@ import { AddProductToCardButton } from "@/components/cart";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
-import { Product } from "@/types/product";
+import { Product } from "@shared/types/product";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ReactNode } from "react";
 

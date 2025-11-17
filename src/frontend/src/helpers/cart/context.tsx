@@ -9,8 +9,8 @@ import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../firebaseConfig";
 import { useAuthContext } from "../authContext";
 import { useProducts } from "../product/context";
-import type { CartItem } from "@/types/cart";
-import type { Product } from "@/types/product";
+import type { CartItem } from "@shared/types/cart";
+import type { Product } from "@shared/types/product";
 
 export interface CartProduct extends Product {
   cartQuantity: number;

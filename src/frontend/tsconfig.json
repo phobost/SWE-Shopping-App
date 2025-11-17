@@ -1,14 +1,13 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shared/*": ["./shared/*"]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -16,19 +15,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    /* Linting */
-    "strict": true,
-    "allowUnreachableCode": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowUnusedLabels": false,
-    "forceConsistentCasingInFileNames": true,
-    "moduleDetection": "force",
-    "noEmitOnError": true,
-    "noImplicitOverride": true
+    "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src", "shared"],
   "references": [
     {
       "path": "./tsconfig.node.json"
