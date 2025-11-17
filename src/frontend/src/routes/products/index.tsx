@@ -23,10 +23,7 @@ function ProductCard({
 }) {
   // TODO: Include the image of the product
   return (
-    <div
-      key={product.uid}
-      className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2"
-    >
+    <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
       {showAdminEdit && editHref && (
         <Button
           variant="ghost"
@@ -73,6 +70,7 @@ function RouteComponent() {
         {products.map((product) => (
           <ProductCard
             product={product}
+            key={product.uid}
             showAdminEdit={isAdmin}
             editHref="/products-admin"
           >
