@@ -106,10 +106,7 @@ impl Application {
 
         router
             .merge(SwaggerUi::new("/docs").url("/docs/openapi.json", api.clone()))
-            .route(
-                "/",
-                get(|| async { Redirect::permanent("/docs/swagger-ui") }),
-            )
+            .route("/", get(|| async { Redirect::permanent("/docs") }))
             .layer(TimeoutLayer::new(Duration::from_secs(30)))
             .layer(
                 ServiceBuilder::new()
