@@ -1,14 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
-import { useAuthContext } from "@/helpers/authContext";
-import './landing-page.css';
+import "./landing-page.css";
 
 export const Route = createFileRoute("/")({ component: Index });
 
 function Index() {
-  const { user } = useAuthContext();
-
   return (
     <div id="app-container">
       {/* Starry Background */}
