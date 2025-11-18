@@ -27,35 +27,20 @@ body {
   background-repeat: repeat;
 }
 
-/* Scroll star background (space between stars) */
-#scroll-star {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 600px;
-  transform: translate(-50%, -50%) scale(3);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    transparent 70%
-  );
-  z-index: 0;
-  pointer-events: none;
-}
-
 /* App container with centered content */
 #app-container {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  padding: 1rem;
   text-align: center;
+  background: radial-gradient(
+    circle clamp(600px, 80dvmin, 1200px) at 50% 50%,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 70%
+  );
 }
 
 /* Title Style */
