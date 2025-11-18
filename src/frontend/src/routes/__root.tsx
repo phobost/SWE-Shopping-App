@@ -10,6 +10,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { UserNav } from "@/components/user-nav";
 import { Cart } from "@/components/cart";
 
+import "./__root.css";
+
 interface RouterCtx {
   auth: AuthContext;
 }
@@ -51,7 +53,9 @@ function RootComponent() {
           </div>
         </div>
       </div>
-      <Outlet />
+      <div id="inner-app">
+        <Outlet />
+      </div>
       <Toaster richColors />
       <TanStackRouterDevtools position="bottom-right" />
     </>

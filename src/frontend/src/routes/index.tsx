@@ -8,11 +8,7 @@ export const Route = createFileRoute("/")({ component: Index });
 function Index() {
   return (
     <div id="app-container">
-      {/* Starry Background */}
-      <div id="scroll-star" />
-
-      {/* Landing Page Content */}
-      <div className="flex flex-col items-center justify-center min-h-screen space-y-6">
+      <div className="flex flex-col items-center space-y-6">
         <svg
           className="w-48 h-48 animate-bounce-slow"
           fill="currentColor"
