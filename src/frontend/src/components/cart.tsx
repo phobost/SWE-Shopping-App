@@ -18,6 +18,18 @@ import { Icons } from "@/components/icons";
 export function Cart() {
   const cartContext = useCartContext();
 
+  const handleIncrement = async (productId: string, currentQty: number, maxQty: number) => {
+    if(currentQty >= maxQty){
+      toast.error("Cannot add more, out of stock");
+      return;
+    }
+    await cartContext.updateQuantity(productId, currentQty + 1);
+  };
+
+  const handleDecrement = async (productId: string, currentQty: number) => {
+    await cartContext.updateQuantity(productId, currentQty - 1);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,15 +40,35 @@ export function Cart() {
           🛒
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-64" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           {cartContext.cartProducts.length > 0 ? (
             cartContext.cartProducts.map((cartProduct) => (
               <div key={cartProduct.uid} className="flex justify-between mb-2">
                 <p className="text-sm font-medium">{cartProduct.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  ×{cartProduct.cartQuantity}
-                </p>
+
+                <div className="flex items-center space-x-1">
+                  <Button
+                    size="sm"
+                    className="h-5 w-5 p-0 text-xs"
+                    onClick={() => handleDecrement(cartProduct.uid, cartProduct.cartQuantity)}
+                    >
+                      -
+                    </Button>
+
+                <span className="text-sm text-muted-foreground">
+                  {cartProduct.cartQuantity}
+                </span>
+
+                <Button
+                  size="sm"
+                  className="h-5 w-5 p-0 text-xs"
+                  onClick={() => handleIncrement(cartProduct.uid, cartProduct.cartQuantity, cartProduct.quantityInStock)}
+                  disabled={cartProduct.cartQuantity >= cartProduct.quantityInStock}
+                  >
+                    +
+                    </Button>
+                </div>
               </div>
             ))
           ) : (
