@@ -38,11 +38,11 @@ Based on a great template [here](https://github.com/connorp987/vite-firebase-tan
 npm run dev
 ```
 
+4. To apply standardized formatting, run `npm run format`
+
 ## Helpful Links
 
 - [Shadcn/ui Documentation](https://ui.shadcn.com/)
 - [TanStack Router Documentation](https://tanstack.com/router/latest)
 - [Firebase Documentation](https://firebase.google.com/docs/auth/web/start)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation)
-
-4. To apply standardized formatting, run `npm run format`
