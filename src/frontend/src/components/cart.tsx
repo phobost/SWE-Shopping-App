@@ -93,7 +93,7 @@ export function Cart() {
         <DropdownMenuLabel>
           <div className="flex justify-between mb-2">
             <p className="font-medium">
-              Subtotal: ${cartContext.getCartTotal().toFixed(2)}
+              Subtotal(w/Tax): ${cartContext.getCartTotal().toFixed(2)}
             </p>
             <Button
               variant="destructive"
