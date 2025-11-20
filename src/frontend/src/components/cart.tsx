@@ -18,8 +18,12 @@ import { Icons } from "@/components/icons";
 export function Cart() {
   const cartContext = useCartContext();
 
-  const handleIncrement = async (productId: string, currentQty: number, maxQty: number) => {
-    if(currentQty >= maxQty){
+  const handleIncrement = async (
+    productId: string,
+    currentQty: number,
+    maxQty: number,
+  ) => {
+    if (currentQty >= maxQty) {
       toast.error("Cannot add more, out of stock");
       return;
     }
@@ -51,23 +55,33 @@ export function Cart() {
                   <Button
                     size="sm"
                     className="h-5 w-5 p-0 text-xs"
-                    onClick={() => handleDecrement(cartProduct.uid, cartProduct.cartQuantity)}
-                    >
-                      -
-                    </Button>
+                    onClick={() =>
+                      handleDecrement(cartProduct.uid, cartProduct.cartQuantity)
+                    }
+                  >
+                    -
+                  </Button>
 
-                <span className="text-sm text-muted-foreground">
-                  {cartProduct.cartQuantity}
-                </span>
+                  <span className="text-sm text-muted-foreground">
+                    {cartProduct.cartQuantity}
+                  </span>
 
-                <Button
-                  size="sm"
-                  className="h-5 w-5 p-0 text-xs"
-                  onClick={() => handleIncrement(cartProduct.uid, cartProduct.cartQuantity, cartProduct.quantityInStock)}
-                  disabled={cartProduct.cartQuantity >= cartProduct.quantityInStock}
+                  <Button
+                    size="sm"
+                    className="h-5 w-5 p-0 text-xs"
+                    onClick={() =>
+                      handleIncrement(
+                        cartProduct.uid,
+                        cartProduct.cartQuantity,
+                        cartProduct.quantityInStock,
+                      )
+                    }
+                    disabled={
+                      cartProduct.cartQuantity >= cartProduct.quantityInStock
+                    }
                   >
                     +
-                    </Button>
+                  </Button>
                 </div>
               </div>
             ))
