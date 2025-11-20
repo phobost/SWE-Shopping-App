@@ -19,8 +19,8 @@ Based on a great template [here](https://github.com/connorp987/vite-firebase-tan
 
 2. Setup Firebase
 
-  - Ensure you've logged in with Firebase: `firebase login`
-  - Start local Firebase emulators
+- Ensure you've logged in with Firebase: `firebase login`
+- Start local Firebase emulators
 
     ```bash
     npm run emulators
@@ -44,3 +44,5 @@ npm run dev
 - [TanStack Router Documentation](https://tanstack.com/router/latest)
 - [Firebase Documentation](https://firebase.google.com/docs/auth/web/start)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation)
+
+4. To apply standardized formatting, run `npm run format`
