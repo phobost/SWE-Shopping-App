@@ -9,7 +9,8 @@
     "emulators:export": "firebase emulators:start --import=./.ignore/firebase-emulator-data --export-on-exit",
     "build": "vite build && tsc --build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -48,6 +49,7 @@
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
+    "prettier": "3.6.2",
     "tailwindcss": "^4.1.14",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.9.3",
