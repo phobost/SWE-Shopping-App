@@ -40,6 +40,10 @@ npm run dev
 
 4. To apply standardized formatting, run `npm run format`
 
+5. To validate code quality, run `npm run lint`
+
+6. To build (and do further build validation), run `tsc --build`
+
 ## Helpful Links
 
 - [Shadcn/ui Documentation](https://ui.shadcn.com/)
