@@ -166,10 +166,17 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const getCartTotal = () => {
-    return cartProducts.reduce(
+    
+    const subtotal = cartProducts.reduce(
       (total, product) => total + product.price * product.cartQuantity,
       0,
     );
+
+    const tax = subtotal * 0.0825;
+    const totalWithTax = subtotal + tax;
+
+    return totalWithTax;
+
   };
 
   const getCartItemCount = () => {
