@@ -166,7 +166,6 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const getCartTotal = () => {
-    
     const subtotal = cartProducts.reduce(
       (total, product) => total + product.price * product.cartQuantity,
       0,
@@ -176,7 +175,6 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
     const totalWithTax = subtotal + tax;
 
     return totalWithTax;
-
   };
 
   const getCartItemCount = () => {
