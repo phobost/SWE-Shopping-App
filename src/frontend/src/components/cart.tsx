@@ -18,6 +18,12 @@ import { Icons } from "@/components/icons";
 export function Cart() {
   const cartContext = useCartContext();
 
+  // tax + totals
+  const TAX_RATE = 0.0825;
+  const subtotal = cartContext.getCartTotal(); // items only
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + tax;
+
   const handleIncrement = async (
     productId: string,
     currentQty: number,
@@ -89,22 +95,40 @@ export function Cart() {
             <p className="text-sm font-medium">Cart empty</p>
           )}
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuLabel>
-          <div className="flex justify-between mb-2">
-            <p className="font-medium">
-              Subtotal(w/Tax): ${cartContext.getCartTotal().toFixed(2)}
-            </p>
-            <Button
-              variant="destructive"
-              className="h-6 w-6 p-0"
-              onClick={cartContext.clearCart}
-            >
-              <Icons.trashCan />
-            </Button>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <span className="font-medium">Subtotal:</span>
+              <span className="font-medium">${subtotal.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="font-medium">Tax:</span>
+              <span className="font-medium">${tax.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="font-semibold">Total:</span>
+              <span className="font-semibold">${total.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-end pt-1">
+              <Button
+                variant="destructive"
+                className="h-6 w-6 p-0"
+                onClick={cartContext.clearCart}
+              >
+                <Icons.trashCan />
+              </Button>
+            </div>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link to="/checkout">Checkout</Link>
