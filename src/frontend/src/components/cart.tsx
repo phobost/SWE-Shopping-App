@@ -62,10 +62,7 @@ export function Cart() {
                     size="sm"
                     className="h-5 w-5 p-0 text-xs"
                     onClick={() =>
-                      handleDecrement(
-                        cartProduct.uid,
-                        cartProduct.cartQuantity,
-                      )
+                      handleDecrement(cartProduct.uid, cartProduct.cartQuantity)
                     }
                   >
                     -
@@ -101,37 +98,36 @@ export function Cart() {
 
         <DropdownMenuSeparator />
 
-          <DropdownMenuLabel>
-            <div className="space-y-1">
-              <div className="flex justify-between">
-                <span className="font-medium">Subtotal:</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="font-medium">Tax:</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="font-semibold">Total:</span>
-                <span className="font-semibold">${total.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-end pt-1">
-                <Button
-                  variant="destructive"
-                  className="h-6 w-6 p-0"
-                  onClick={cartContext.clearCart}
-                >
-                  <Icons.trashCan />
-                </Button>
-              </div>
+        <DropdownMenuLabel>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <span className="font-medium">Subtotal:</span>
+              <span className="font-medium">${subtotal.toFixed(2)}</span>
             </div>
-          </DropdownMenuLabel>
 
-          <DropdownMenuSeparator />
+            <div className="flex justify-between">
+              <span className="font-medium">Tax:</span>
+              <span className="font-medium">${tax.toFixed(2)}</span>
+            </div>
 
+            <div className="flex justify-between">
+              <span className="font-semibold">Total:</span>
+              <span className="font-semibold">${total.toFixed(2)}</span>
+            </div>
+
+            <div className="flex justify-end pt-1">
+              <Button
+                variant="destructive"
+                className="h-6 w-6 p-0"
+                onClick={cartContext.clearCart}
+              >
+                <Icons.trashCan />
+              </Button>
+            </div>
+          </div>
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
@@ -172,4 +168,3 @@ export function AddProductToCardButton({ product }: { product: Product }) {
     </Button>
   );
 }
-
