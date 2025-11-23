@@ -41,19 +41,19 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
 
 const SEED_DISCOUNTS: Discount[] = [
   {
-    code: "code",
+    id: "code",
     percentage: 5,
   },
   {
-    code: "example",
+    id: "example",
     percentage: 10,
   },
   {
-    code: "another",
+    id: "another",
     percentage: 30,
   },
   {
-    code: "last",
+    id: "last",
     percentage: 45,
   },
 ];

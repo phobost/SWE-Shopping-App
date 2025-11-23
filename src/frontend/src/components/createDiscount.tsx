@@ -111,7 +111,7 @@ export const DiscountDrawer = ({
                 }
                 setIsOpen(false);
                 await setDiscount({
-                  code,
+                  id: code,
                   percentage,
                 });
                 toast.success(

@@ -40,9 +40,9 @@ export const Route = createFileRoute("/admin/discounts")({
 
 const columns: ColumnDef<Discount>[] = [
   {
-    accessorKey: "code",
+    accessorKey: "id",
     header: () => <div className="font-bold">Code</div>,
-    cell: ({ row }) => <div>{row.getValue("code")}</div>,
+    cell: ({ row }) => <div>{row.getValue("id")}</div>,
   },
   {
     accessorKey: "percentage",
@@ -72,15 +72,14 @@ const columns: ColumnDef<Discount>[] = [
     accessorKey: "delete",
     header: "",
     cell: ({ row }) => {
-      // row.
-      const code: string = row.getValue("code");
+      const id: string = row.getValue("id");
 
       return (
         <Button variant="destructive" size="icon" className="hover:bg-red-900">
           <Trash
             onClick={async () => {
-              console.log(`Deleting code with discount: ${code}`);
-              await deleteDiscount(code);
+              console.log(`Deleting code with discount: ${id}`);
+              await deleteDiscount(id);
             }}
           />
         </Button>
@@ -121,9 +120,9 @@ function InnerComponent() {
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter codes..."
-          value={(table.getColumn("code")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("code")?.setFilterValue(event.target.value)
+            table.getColumn("id")?.setFilterValue(event.target.value)
           }
           className="max-w-3xs "
         />

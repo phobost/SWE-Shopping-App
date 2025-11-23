@@ -1,4 +1,4 @@
 export interface Discount {
-  code: string;
+  id: string;
   percentage: number;
 }
