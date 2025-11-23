@@ -50,7 +50,7 @@ function ProductCard({
 function RouteComponent() {
   const context = useAuthContext();
   const isAdmin = context.isAdmin();
-  const { products, loading, error } = useProducts();
+  const { data, loading, error } = useProducts();
 
   if (loading) {
     return <div>Loading products...</div>;
@@ -67,10 +67,10 @@ function RouteComponent() {
       </div>
 
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
+        {data.map((product) => (
           <ProductCard
             product={product}
-            key={product.uid}
+            key={product.id}
             showAdminEdit={isAdmin}
             editHref="/products-admin"
           >
@@ -82,7 +82,7 @@ function RouteComponent() {
               <Button variant="secondary" asChild>
                 <Link
                   to="/products/id/$productId"
-                  params={{ productId: product.uid }}
+                  params={{ productId: product.id }}
                 >
                   Details
                 </Link>

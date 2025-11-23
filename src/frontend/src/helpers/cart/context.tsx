@@ -33,7 +33,7 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user } = useAuthContext();
-  const { products } = useProducts(); // Reuse products from context
+  const { data } = useProducts(); // Reuse products from context
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const cartProducts = useMemo((): CartProduct[] => {
     return cartItems
       .map((item) => {
-        const product = products.find((p) => p.uid === item.productId);
+        const product = data.find((p) => p.id === item.productId);
         if (!product) return null;
 
         return {
@@ -67,13 +67,13 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
         };
       })
       .filter((item): item is CartProduct => item !== null);
-  }, [cartItems, products]);
+  }, [cartItems, data]);
 
   const addToCart = async (productId: string, quantity = 1) => {
     if (!user) throw new Error("You must be logged in");
 
     // Find the product to check stock
-    const product = products.find((p) => p.uid === productId);
+    const product = data.find((p) => p.id === productId);
 
     if (!product) {
       throw new Error("Product not found");
@@ -129,7 +129,7 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
 
     // Find the product to check stock
-    const product = products.find((p) => p.uid === productId);
+    const product = data.find((p) => p.id === productId);
 
     if (!product) {
       throw new Error("Product not found");

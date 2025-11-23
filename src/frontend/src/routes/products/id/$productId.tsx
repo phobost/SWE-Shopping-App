@@ -17,7 +17,7 @@ export const Route = createFileRoute("/products/id/$productId")({
 
     return {
       product: {
-        uid: productSnapshot.id,
+        id: productSnapshot.id,
         ...productSnapshot.data(),
       } as Product,
     };
