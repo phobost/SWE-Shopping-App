@@ -103,7 +103,7 @@ export function Cart() {
                     size="sm"
                     variant="destructive"
                     className="h-5 w-5 p-0"
-                    onClick={() => handleRemoveItem(cartProduct.uid)}
+                    onClick={() => handleRemoveItem(cartProduct.id)}
                   >
                     <Icons.trashCan />
                   </Button>
