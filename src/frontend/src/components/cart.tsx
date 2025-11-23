@@ -56,7 +56,7 @@ export function Cart() {
         <DropdownMenuLabel className="font-normal">
           {cartContext.cartProducts.length > 0 ? (
             cartContext.cartProducts.map((cartProduct) => (
-              <div key={cartProduct.uid} className="flex justify-between mb-2">
+              <div key={cartProduct.id} className="flex justify-between mb-2">
                 <p className="text-sm font-medium">{cartProduct.name}</p>
 
                 <div className="flex items-center space-x-1">
@@ -64,7 +64,7 @@ export function Cart() {
                     size="sm"
                     className="h-5 w-5 p-0 text-xs"
                     onClick={() =>
-                      handleDecrement(cartProduct.uid, cartProduct.cartQuantity)
+                      handleDecrement(cartProduct.id, cartProduct.cartQuantity)
                     }
                   >
                     -
@@ -79,7 +79,7 @@ export function Cart() {
                     className="h-5 w-5 p-0 text-xs"
                     onClick={() =>
                       handleIncrement(
-                        cartProduct.uid,
+                        cartProduct.id,
                         cartProduct.cartQuantity,
                         cartProduct.quantityInStock,
                       )
@@ -148,7 +148,7 @@ export function AddProductToCardButton({ product }: { product: Product }) {
   const handleAddToCart = async () => {
     setAdding(true);
     try {
-      await addToCart(product.uid);
+      await addToCart(product.id);
       toast.success("Added to cart!", {
         description: product.name,
       });

@@ -49,7 +49,7 @@ if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {
   );
 }
 
-const SEED_PRODUCTS: Omit<Product, "uid">[] = [
+const SEED_PRODUCTS: Omit<Product, "id">[] = [
   {
     name: "Genuine Moon Rock",
     price: 20.0,
