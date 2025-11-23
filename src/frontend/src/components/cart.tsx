@@ -17,6 +17,7 @@ import { Icons } from "@/components/icons";
 
 export function Cart() {
   const cartContext = useCartContext();
+  const hasItems = cartContext.cartProducts.length > 0;
 
   // tax + totals
   const TAX_RATE = 0.0825;
@@ -40,6 +41,12 @@ export function Cart() {
     await cartContext.updateQuantity(productId, currentQty - 1);
   };
 
+  // remove a single product from the cart
+  const handleRemoveItem = async (productId: string) => {
+    // if your context has removeFromCart(productId), use that instead
+    await cartContext.updateQuantity(productId, 0);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -52,7 +59,7 @@ export function Cart() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
-          {cartContext.cartProducts.length > 0 ? (
+          {hasItems ? (
             cartContext.cartProducts.map((cartProduct) => (
               <div key={cartProduct.uid} className="flex justify-between mb-2">
                 <p className="text-sm font-medium">{cartProduct.name}</p>
@@ -88,6 +95,16 @@ export function Cart() {
                   >
                     +
                   </Button>
+
+                  {/* per-item trash can button */}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-5 w-5 p-0"
+                    onClick={() => handleRemoveItem(cartProduct.uid)}
+                  >
+                    <Icons.trashCan />
+                  </Button>
                 </div>
               </div>
             ))
@@ -96,44 +113,49 @@ export function Cart() {
           )}
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+        {/* Only show totals + checkout when there are items */}
+        {hasItems && (
+          <>
+            <DropdownMenuSeparator />
 
-        <DropdownMenuLabel>
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span className="font-medium">Subtotal:</span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
-            </div>
+            <DropdownMenuLabel>
+              <div className="space-y-1">
+                <div className="flex justify-between">
+                  <span className="font-medium">Subtotal:</span>
+                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                </div>
 
-            <div className="flex justify-between">
-              <span className="font-medium">Tax:</span>
-              <span className="font-medium">${tax.toFixed(2)}</span>
-            </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Tax:</span>
+                  <span className="font-medium">${tax.toFixed(2)}</span>
+                </div>
 
-            <div className="flex justify-between">
-              <span className="font-semibold">Total:</span>
-              <span className="font-semibold">${total.toFixed(2)}</span>
-            </div>
+                <div className="flex justify-between">
+                  <span className="font-semibold">Total:</span>
+                  <span className="font-semibold">${total.toFixed(2)}</span>
+                </div>
 
-            <div className="flex justify-end pt-1">
-              <Button
-                variant="destructive"
-                className="h-6 w-6 p-0"
-                onClick={cartContext.clearCart}
-              >
-                <Icons.trashCan />
-              </Button>
-            </div>
-          </div>
-        </DropdownMenuLabel>
+                <div className="flex justify-end pt-1">
+                  <Button
+                    variant="destructive"
+                    className="h-6 w-6 p-0"
+                    onClick={cartContext.clearCart}
+                  >
+                    <Icons.trashCan />
+                  </Button>
+                </div>
+              </div>
+            </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link to="/checkout">Checkout</Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link to="/checkout">Checkout</Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -168,3 +190,4 @@ export function AddProductToCardButton({ product }: { product: Product }) {
     </Button>
   );
 }
+
