@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "emulators": "firebase emulators:start",
-    "emulators:export": "firebase emulators:start --import=./.ignore/firebase-emulator-data --export-on-exit",
+    "emulators:export": "firebase emulators:start --import=./.ignore/firebase-emulator-data --export-on-exit=./.ignore/firebase-emulator-data",
     "build": "vite build && tsc --build",
     "preview": "vite preview",
     "lint": "eslint .",
