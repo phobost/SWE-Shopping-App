@@ -6,6 +6,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 import { ProductsProvider } from "./helpers/product/context";
 import { CartContextProvider } from "./helpers/cart/context";
+import { seedFirestore } from "./helpers/seed";
 
 // Set up a Router instance
 const router = createRouter({
@@ -43,6 +44,12 @@ function App() {
       </AuthContextProvider>
     </ThemeProvider>
   );
+}
+
+if (import.meta.env.DEV) {
+  console.log("Detected dev environment, seeding firestore...");
+  await seedFirestore();
+  console.log("Finished seeding");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
