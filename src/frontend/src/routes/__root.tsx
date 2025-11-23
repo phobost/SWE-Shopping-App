@@ -21,7 +21,7 @@ export const Route = createRootRouteWithContext<RouterCtx>()({
 });
 
 function RootComponent() {
-  const { user } = useAuthContext();
+  const { user, isAdmin } = useAuthContext();
 
   return (
     <>
@@ -40,6 +40,18 @@ function RootComponent() {
           <Link to="/about" activeProps={{ className: "font-bold" }}>
             About
           </Link>
+          {(() => {
+            if (isAdmin()) {
+              return (
+                <Link
+                  to="/admin/discounts"
+                  activeProps={{ className: "font-bold" }}
+                >
+                  Discounts
+                </Link>
+              );
+            }
+          })()}
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
             {user ? (

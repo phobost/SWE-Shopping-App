@@ -2,9 +2,7 @@ import { initializeApp, getApps } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { collection, getDocs, writeBatch, doc } from "firebase/firestore";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-import { Product } from "@shared/types/product";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_PUBLIC_FIREBASE_API_KEY,
@@ -47,69 +45,4 @@ if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {
     "127.0.0.1",
     parseInt(import.meta.env.VITE_FIREBASE_FUNCTIONS_EMULATOR_PORT || "5001"),
   );
-}
-
-const SEED_PRODUCTS: Omit<Product, "id">[] = [
-  {
-    name: "Genuine Moon Rock",
-    price: 20.0,
-    description:
-      "Straight from the Sea of Tranquility. Certified* authentic (*by us).",
-    quantityInStock: 50,
-    base64Image: null,
-  },
-  {
-    name: "Coende Crunch Alden",
-    price: 5.49,
-    quantityInStock: 20,
-    description:
-      "Snacks that taste like chicken... if chicken were neon green and crunchy.",
-    base64Image: null,
-  },
-  {
-    name: "Bottle of Stardust",
-    price: 29.99,
-    quantityInStock: 8,
-    description:
-      "For sprinkling on your cereal or wishing upon. Contains glitter.",
-    base64Image: null,
-  },
-  {
-    name: "Pluto's Pet Plushle",
-    price: 12.0,
-    quantityInStock: 7,
-    description:
-      "The fluffiest, coldest dog in the Kuiper Belt. Hypoallergenic*.",
-    base64Image: null,
-  },
-];
-
-async function seedProducts(): Promise<void> {
-  try {
-    const productsCollection = collection(firestore, "products");
-
-    // Check if products already exist
-    const snapshot = await getDocs(productsCollection);
-
-    if (!snapshot.empty) {
-      console.log("Products collection already has data. Skipping seed.");
-      return;
-    }
-
-    const batch = writeBatch(firestore);
-
-    SEED_PRODUCTS.forEach((product) => {
-      const productRef = doc(productsCollection);
-      batch.set(productRef, product);
-    });
-
-    await batch.commit();
-    console.log(`Successfully seeded ${SEED_PRODUCTS.length} products`);
-  } catch (error) {
-    console.error("Error seeding products:", error);
-  }
-}
-
-if (import.meta.env.DEV) {
-  await seedProducts();
 }

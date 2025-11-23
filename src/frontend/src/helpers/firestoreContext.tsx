@@ -35,10 +35,6 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
     FirestoreDataContextType | undefined
   >(undefined);
 
-  interface FirestoreDataProviderProps {
-    children: React.ReactNode;
-  }
-
   const dataConverter = {
     toFirestore(item: FirestoreDataType): firebase.firestore.DocumentData {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,7 +52,9 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
     },
   };
 
-  const DataProvider: React.FC<FirestoreDataProviderProps> = ({ children }) => {
+  const DataProvider: React.FC<{ children: React.ReactNode }> = ({
+    children,
+  }) => {
     const [data, setData] = useState<FirestoreDataType[]>([]);
     const [snapshot, setSnapshot] = useState<DataQuerySnapshot | undefined>(
       undefined,
