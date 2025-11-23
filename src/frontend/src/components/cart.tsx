@@ -19,9 +19,11 @@ export function Cart() {
   const cartContext = useCartContext();
 
   // tax + totals
-  const TAX_RATE = 0.0825;
-  const subtotal = cartContext.getCartTotal(); // items only
-  const tax = subtotal * TAX_RATE;
+  const subtotal = cartContext.cartProducts.reduce(
+    (total, product) => total + product.price * product.cartQuantity,
+    0,
+  );
+  const tax = 0.0825 * subtotal;
   const total = subtotal + tax;
 
   const handleIncrement = async (
