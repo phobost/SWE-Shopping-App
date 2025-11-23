@@ -7,6 +7,7 @@ import "./index.css";
 import { ProductsProvider } from "./helpers/product/context";
 import { CartContextProvider } from "./helpers/cart/context";
 import { seedFirestore } from "./helpers/seed";
+import { DiscountsProvider } from "./helpers/discount/context";
 
 // Set up a Router instance
 const router = createRouter({
@@ -38,7 +39,9 @@ function App() {
       <AuthContextProvider>
         <ProductsProvider>
           <CartContextProvider>
-            <InnerApp />
+            <DiscountsProvider>
+              <InnerApp />
+            </DiscountsProvider>
           </CartContextProvider>
         </ProductsProvider>
       </AuthContextProvider>

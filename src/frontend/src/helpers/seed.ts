@@ -2,6 +2,7 @@ import { Product } from "@shared/types/product";
 import { firestore } from "./firebaseConfig";
 import { collection, doc, getDocs, writeBatch } from "@firebase/firestore";
 import { Discount } from "@shared/types/discount";
+import { setDiscount } from "./discount/util";
 
 const SEED_PRODUCTS: Omit<Product, "id">[] = [
   {
@@ -61,7 +62,6 @@ const SEED_DISCOUNTS: Discount[] = [
 async function seed(collectionName: string, items): Promise<void> {
   try {
     const col = collection(firestore, collectionName);
-
     // Check if snapshot already exists
     const snapshot = await getDocs(col);
 
@@ -89,9 +89,16 @@ async function seed(collectionName: string, items): Promise<void> {
   }
 }
 
+async function seedDiscounts() {
+  SEED_DISCOUNTS.forEach(async (discount) => {
+    await setDiscount(discount);
+  });
+  console.log("Finished seeding discounts");
+}
+
 export async function seedFirestore() {
   if (import.meta.env.DEV) {
     await seed("products", SEED_PRODUCTS);
-    await seed("discounts", SEED_DISCOUNTS);
+    await seedDiscounts();
   }
 }
