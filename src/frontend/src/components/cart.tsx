@@ -190,4 +190,3 @@ export function AddProductToCardButton({ product }: { product: Product }) {
     </Button>
   );
 }
-
