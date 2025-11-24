@@ -1,18 +1,37 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { columns } from "../../src/components/ui/columns.tsx";
 import { DataTable } from "../../src/components/ui/data-table.tsx";
 import { useCartContext } from "../helpers/cart/context.tsx";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { collection, addDoc, doc, runTransaction } from "firebase/firestore";
-import { firestore } from "../helpers/firebaseConfig.ts";
+import { Timestamp } from "firebase/firestore";
 import { useAuthContext } from "@/helpers/authContext.tsx";
 import type { Discount } from "@shared/types/discount";
 import { getDiscount } from "../helpers/discount/util";
 import { toast } from "sonner";
+import { createOrderProvider } from "@/helpers/orders/util.ts";
+import { OrderProduct } from "@shared/types/order.ts";
 
-export const Route = createFileRoute("/checkout")({ component: Checkout });
+export const Route = createFileRoute("/checkout")({
+  component: CheckoutWithOrderProvider,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.user) {
+      throw redirect({ to: "/" });
+    }
+    return createOrderProvider(context.auth.user.uid);
+  },
+});
+
+function CheckoutWithOrderProvider() {
+  const { provider: Provider } = Route.useRouteContext();
+
+  return (
+    <Provider>
+      <Checkout />
+    </Provider>
+  );
+}
 
 interface DiscountInputProps {
   discountCode: string;
@@ -60,6 +79,7 @@ const initialCardDetails = {
   expiry: "",
   cvc: "",
 };
+
 function PaymentForm({
   totalAmount,
   cartEmpty,
@@ -192,6 +212,8 @@ function Checkout() {
   const { cartProducts, clearCart } = useCartContext();
   const authContext = useAuthContext();
   const user = authContext.user;
+  const { useContext } = Route.useRouteContext();
+  const orderContext = useContext();
 
   const cartSubtotal = cartProducts.reduce(
     (total, product) => total + product.price * product.cartQuantity,
@@ -201,6 +223,7 @@ function Checkout() {
   const cartTax = cartSubtotal * 0.0825; //
 
   const [discountCode, setDiscountCode] = useState("");
+  const [discount, setDiscount] = useState<null | Discount>(null);
   const [appliedDiscount, setAppliedDiscount] = useState(0);
   const [discountMessage, setDiscountMessage] = useState("");
   const [isApplying, setIsApplying] = useState(false);
@@ -218,7 +241,9 @@ function Checkout() {
       if (!discountDoc || !discountDoc.percentage) {
         setDiscountMessage("Error: Invalid or expired discount code.");
         setAppliedDiscount(0);
+        setDiscount(null);
       } else {
+        setDiscount(discountDoc);
         const discountPercentageInteger = discountDoc.percentage;
         const calculatedDiscountAmount =
           cartSubtotal * (discountPercentageInteger * 0.01);
@@ -232,13 +257,14 @@ function Checkout() {
     } catch (error) {
       console.error("Error applying discount:", error);
       setDiscountMessage("An unexpected error occurred. Please try again.");
+      setDiscount(null);
       setAppliedDiscount(0);
     } finally {
       setIsApplying(false);
     }
   };
 
-  const finalCartTotal = cartSubtotal + cartTax - appliedDiscount;
+  const finalCartTotal = Math.max(cartSubtotal + cartTax - appliedDiscount, 0);
   const isEmpty = cartProducts.length === 0;
 
   const handlePlaceOrder = async () => {
@@ -249,39 +275,26 @@ function Checkout() {
       return;
     }
 
-    const counterRef = doc(firestore, "counters", "orderId");
-    let newOrderId = 0;
-
     try {
-      await runTransaction(firestore, async (transaction) => {
-        const counterDoc = await transaction.get(counterRef);
-        const currentId = counterDoc.exists()
-          ? counterDoc.data().currentId
-          : 1000;
-        newOrderId = currentId + 1;
-        transaction.set(counterRef, { currentId: newOrderId });
+      const orderProducts: OrderProduct[] = cartProducts.map((cProduct) => {
+        return {
+          id: cProduct.id,
+          name: cProduct.name,
+          price: cProduct.price,
+          quantityOrdered: cProduct.cartQuantity,
+        };
       });
-      const orderData = {
-        orderId: newOrderId,
+      const order = await orderContext.firestore.create({
         userId: user.uid,
-        items: cartProducts.map((p) => ({
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          quantity: p.cartQuantity,
-        })),
+        products: orderProducts,
+        discount,
         total: finalCartTotal,
-        subtotal: cartSubtotal,
-        tax: cartTax,
-        discount: appliedDiscount,
-        paymentMethod: "Card",
-      };
+        timestamp: Timestamp.now(),
+      });
 
-      const ordersRef = collection(firestore, "orders");
-      await addDoc(ordersRef, orderData);
-      console.log("Order successfully placed with ID:", newOrderId);
-      toast.error(
-        `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: ${newOrderId}`,
+      console.log("Order successfully placed with ID:", order.id);
+      toast.success(
+        `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: '${order.id}'`,
       );
       await clearCart();
     } catch (error) {

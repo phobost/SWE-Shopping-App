@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import type { CartProduct } from "../../helpers/cart/context.tsx";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "./button.tsx";
+import { CartProduct } from "@shared/types/cart.ts";
 
 export const columns: ColumnDef<CartProduct>[] = [
   {

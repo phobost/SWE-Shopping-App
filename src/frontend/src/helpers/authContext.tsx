@@ -4,6 +4,7 @@ import { auth } from "./firebaseConfig";
 import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "./firebaseConfig";
 import { IdTokenResult, User } from "@shared/types/user";
+import { DOCUMENT_NAMES } from "@shared/constants";
 
 export interface AuthContext {
   user: User | null;
@@ -68,10 +69,10 @@ export const AuthContextProvider = ({
     let unsubscribeFirestore: (() => void) | undefined;
 
     if (user?.uid) {
-      const userRef = doc(firestore, "users", user.uid);
+      const userRef = doc(firestore, DOCUMENT_NAMES.user(user.uid));
       unsubscribeFirestore = onSnapshot(userRef, (doc) => {
         if (doc.exists()) {
-          setUserData(doc.data() as UserData);
+          setUserData(doc.data().settings as UserData);
         } else {
           // Initialize user document if it doesn't exist
           setUserData({
