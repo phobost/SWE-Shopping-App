@@ -136,7 +136,8 @@ export function ProductEditor({
     undefined | number
   >(product.quantityInStock);
   console.log(product.quantityInStock);
-  const quantityInStockRepr = quantityInStock ? quantityInStock : "";
+  const quantityInStockRepr =
+    quantityInStock !== undefined ? quantityInStock : "";
   const [markdownBody, setMarkdownBody] = React.useState(product.body.markdown);
   const [htmlBody, setHtmlBody] = React.useState(product.body.html);
 
@@ -167,7 +168,7 @@ export function ProductEditor({
       }
     },
     quantityInStock: () => {
-      if (!quantityInStock) {
+      if (quantityInStock === undefined) {
         return "Quantity in stock cannot be empty!";
       }
 
@@ -331,14 +332,13 @@ export function ProductEditor({
                           type="button"
                           variant="outline"
                           onClick={() => {
-                            const newQuant =
+                            console.log(quantityInStock);
+                            let newQuant =
                               (quantityInStock ? quantityInStock : 0) - 1;
+                            newQuant = Math.max(newQuant, 0);
 
-                            if (newQuant == 0) {
-                              setQuantityInStock(undefined);
-                              return;
-                            }
-                            setQuantityInStock(Math.max(newQuant, 0));
+                            console.log("After", newQuant);
+                            setQuantityInStock(newQuant);
                           }}
                         >
                           <CircleMinusIcon />
@@ -347,14 +347,12 @@ export function ProductEditor({
                           id="product-quantity-field"
                           required
                           value={quantityInStockRepr}
-                          min="0"
                           className="text-center"
                           placeholder="0"
                           step="1"
                           inputMode="numeric"
                           onChange={(e) => {
                             const val = e.target.value.trim();
-                            console.log(">>>", val);
                             if (val == "") {
                               setQuantityInStock(undefined);
                               return;
