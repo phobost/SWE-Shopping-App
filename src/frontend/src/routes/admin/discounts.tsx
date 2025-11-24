@@ -75,13 +75,16 @@ const columns: ColumnDef<Discount>[] = [
       const id: string = row.getValue("id");
 
       return (
-        <Button variant="destructive" size="icon" className="hover:bg-red-900">
-          <Trash
-            onClick={async () => {
-              console.log(`Deleting code with discount: ${id}`);
-              await deleteDiscount(id);
-            }}
-          />
+        <Button
+          variant="destructive"
+          size="icon"
+          className="hover:bg-red-900"
+          onClick={async () => {
+            console.log(`Deleting code with discount: ${id}`);
+            await deleteDiscount(id);
+          }}
+        >
+          <Trash />
         </Button>
       );
     },
