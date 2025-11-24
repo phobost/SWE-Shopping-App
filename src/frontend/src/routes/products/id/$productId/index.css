@@ -1,0 +1,12 @@
+.product-body h1 {
+  font-size: 3em;
+  font-weight: 900;
+}
+
+.product-body h1::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #ccc;
+}

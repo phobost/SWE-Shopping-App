@@ -8,6 +8,10 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
   {
     name: "Genuine Moon Rock",
     price: 20.0,
+    body: {
+      markdown: "",
+      html: "",
+    },
     description:
       "Straight from the Sea of Tranquility. Certified* authentic (*by us).",
     quantityInStock: 50,
@@ -17,6 +21,10 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
     name: "Coende Crunch Alden",
     price: 5.49,
     quantityInStock: 20,
+    body: {
+      markdown: "",
+      html: "",
+    },
     description:
       "Snacks that taste like chicken... if chicken were neon green and crunchy.",
     base64Image: null,
@@ -25,6 +33,10 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
     name: "Bottle of Stardust",
     price: 29.99,
     quantityInStock: 8,
+    body: {
+      markdown: "",
+      html: "",
+    },
     description:
       "For sprinkling on your cereal or wishing upon. Contains glitter.",
     base64Image: null,
@@ -33,6 +45,10 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
     name: "Pluto's Pet Plushle",
     price: 12.0,
     quantityInStock: 7,
+    body: {
+      markdown: "",
+      html: "",
+    },
     description:
       "The fluffiest, coldest dog in the Kuiper Belt. Hypoallergenic*.",
     base64Image: null,
