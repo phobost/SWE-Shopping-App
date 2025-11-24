@@ -168,10 +168,12 @@ function SettingsPage() {
       await setDoc(
         userRef,
         {
-          displayName,
-          photoURL: avatarUrl,
-          base64Image, // Store full base64 image data only in Firestore
-          email: user.email,
+          settings: {
+            displayName,
+            photoURL: avatarUrl,
+            base64Image, // Store full base64 image data only in Firestore
+            email: user.email,
+          },
         },
         { merge: true },
       );

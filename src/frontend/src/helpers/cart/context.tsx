@@ -9,12 +9,8 @@ import { doc, setDoc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../firebaseConfig";
 import { useAuthContext } from "../authContext";
 import { useProducts } from "../product/context";
-import type { CartItem } from "@shared/types/cart";
-import type { Product } from "@shared/types/product";
-
-export interface CartProduct extends Product {
-  cartQuantity: number;
-}
+import { CartItem, CartProduct } from "@shared/types/cart";
+import { DOCUMENT_NAMES } from "@shared/constants";
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -43,10 +39,10 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
       return;
     }
 
-    const cartRef = doc(firestore, "carts", user.uid);
+    const cartRef = doc(firestore, DOCUMENT_NAMES.cart(user.uid));
     const unsubscribe = onSnapshot(cartRef, (doc) => {
       if (doc.exists()) {
-        setCartItems(doc.data().items || []);
+        setCartItems(doc.data().cart.items || []);
       } else {
         setCartItems([]);
       }
@@ -91,7 +87,7 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
       );
     }
 
-    const cartRef = doc(firestore, "carts", user.uid);
+    const cartRef = doc(firestore, DOCUMENT_NAMES.cart(user.uid));
     const newItems = existingItem
       ? cartItems.map((item) =>
           item.productId === productId
@@ -100,24 +96,36 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
         )
       : [...cartItems, { productId, quantity, addedAt: new Date() }];
 
-    await setDoc(cartRef, {
-      userId: user.uid,
-      items: newItems,
-      updatedAt: new Date(),
-    });
+    await setDoc(
+      cartRef,
+      {
+        cart: {
+          userId: user.uid,
+          items: newItems,
+          updatedAt: new Date(),
+        },
+      },
+      { merge: true },
+    );
   };
 
   const removeFromCart = async (productId: string) => {
     if (!user) throw new Error("User must be logged in");
 
-    const cartRef = doc(firestore, "carts", user.uid);
+    const cartRef = doc(firestore, DOCUMENT_NAMES.cart(user.uid));
     const newItems = cartItems.filter((item) => item.productId !== productId);
 
-    await setDoc(cartRef, {
-      userId: user.uid,
-      items: newItems,
-      updatedAt: new Date(),
-    });
+    await setDoc(
+      cartRef,
+      {
+        cart: {
+          userId: user.uid,
+          items: newItems,
+          updatedAt: new Date(),
+        },
+      },
+      { merge: true },
+    );
   };
 
   const updateQuantity = async (productId: string, quantity: number) => {
@@ -142,27 +150,39 @@ export const CartContextProvider: React.FC<{ children: React.ReactNode }> = ({
       );
     }
 
-    const cartRef = doc(firestore, "carts", user.uid);
+    const cartRef = doc(firestore, DOCUMENT_NAMES.cart(user.uid));
     const newItems = cartItems.map((item) =>
       item.productId === productId ? { ...item, quantity } : item,
     );
 
-    await setDoc(cartRef, {
-      userId: user.uid,
-      items: newItems,
-      updatedAt: new Date(),
-    });
+    await setDoc(
+      cartRef,
+      {
+        cart: {
+          userId: user.uid,
+          items: newItems,
+          updatedAt: new Date(),
+        },
+      },
+      { merge: true },
+    );
   };
 
   const clearCart = async () => {
     if (!user) throw new Error("User must be logged in");
 
-    const cartRef = doc(firestore, "carts", user.uid);
-    await setDoc(cartRef, {
-      userId: user.uid,
-      items: [],
-      updatedAt: new Date(),
-    });
+    const cartRef = doc(firestore, DOCUMENT_NAMES.cart(user.uid));
+    await setDoc(
+      cartRef,
+      {
+        cart: {
+          userId: user.uid,
+          items: [],
+          updatedAt: new Date(),
+        },
+      },
+      { merge: true },
+    );
   };
 
   const getCartTotal = () => {

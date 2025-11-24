@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import type { CartProduct } from "../../helpers/cart/context.tsx";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "./button.tsx";
+import { CartProduct } from "@shared/types/cart.ts";
 
 export const columns: ColumnDef<CartProduct>[] = [
   {
@@ -48,8 +48,9 @@ export const columns: ColumnDef<CartProduct>[] = [
         </div>
       );
     },
-    cell: ({ row }) => (
-      <div className="text-right">${row.original.price.toFixed(2)}</div>
-    ),
+    cell: ({ row }) => {
+      const itemTotal = row.original.price * row.original.cartQuantity;
+      return <div className="text-right">${itemTotal.toFixed(2)}</div>;
+    },
   },
 ];

@@ -12,12 +12,12 @@ import { Product } from "@shared/types/product";
 import { PartialKeys } from "@tanstack/react-table";
 
 export const getProductRef = (id: string) => {
-  return doc(firestore, COLLECTION_NAMES.products, id);
+  return doc(firestore, COLLECTION_NAMES.products(), id);
 };
 
 export const createProduct = async (product: Omit<Product, "id">) => {
   const id = (
-    await addDoc(collection(firestore, COLLECTION_NAMES.products), product)
+    await addDoc(collection(firestore, COLLECTION_NAMES.products()), product)
   ).id;
   return {
     ...product,
