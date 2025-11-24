@@ -1,52 +1,14 @@
 import { AddProductToCardButton } from "@/components/cart";
+import { ProductCard } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
-import { Product } from "@shared/types/product";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ReactNode } from "react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/products/")({
   component: RouteComponent,
 });
-
-function ProductCard({
-  product,
-  children,
-  showAdminEdit,
-  editHref,
-}: {
-  product: Product;
-  children?: ReactNode;
-  showAdminEdit?: boolean;
-  editHref?: string;
-}) {
-  // TODO: Include the image of the product
-  return (
-    <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
-      {showAdminEdit && editHref && (
-        <Button
-          variant="ghost"
-          size="icon"
-          asChild
-          className="absolute right-3 top-3 h-8 w-8 rounded-full"
-        >
-          <Link to={editHref}>
-            <span className="sr-only">Edit product</span>
-            ⚙️
-          </Link>
-        </Button>
-      )}
-      <h3 className="font-semibold text-lg">
-        {product.name} | ${product.price}
-      </h3>
-      <p className="text-sm text-muted-foreground">{product.description}</p>
-      <p className="text-sm">In Stock: {product.quantityInStock}</p>
-      {children && <div className="pt-4">{children}</div>}
-    </div>
-  );
-}
 
 function RouteComponent() {
   const context = useAuthContext();
@@ -88,7 +50,6 @@ function RouteComponent() {
             product={product}
             key={product.id}
             showAdminEdit={isAdmin}
-            editHref="/products-admin"
           >
             <div className="flex flex-wrap gap-2">
               <AddProductToCardButton product={product} />
