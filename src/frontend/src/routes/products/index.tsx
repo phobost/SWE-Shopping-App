@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/products/")({
@@ -42,6 +43,16 @@ function RouteComponent() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+        <Button
+          variant="secondary"
+          className="text-emerald-100 bg-emerald-600 dark:text-emerald-200 dark:bg-emerald-900"
+          asChild
+        >
+          <Link to="/products/create">
+            <PlusCircleIcon />
+            <p className="pl-2">New Product</p>
+          </Link>
+        </Button>
       </div>
 
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">

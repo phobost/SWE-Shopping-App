@@ -1,11 +1,9 @@
-// import { ProductEditCard } from "@/components/product";
 import { ProductEditor } from "@/components/product";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/products/id/$productId/edit")({
+export const Route = createFileRoute("/products/create")({
   beforeLoad: async ({ context }) => {
     if (!context.auth.isAdmin()) {
-      console.error("User is not an admin!");
       throw redirect({ to: "/" });
     }
   },
@@ -13,7 +11,11 @@ export const Route = createFileRoute("/products/id/$productId/edit")({
 });
 
 function RouteComponent() {
-  const product = Route.useRouteContext().product;
-
-  return <ProductEditor product={product} />;
+  return (
+    <div className="flex flex-col justify-center items-center pt-12">
+      <div className="w-full container p-10">
+        <ProductEditor />
+      </div>
+    </div>
+  );
 }
