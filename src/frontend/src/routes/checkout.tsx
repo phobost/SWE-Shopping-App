@@ -5,18 +5,12 @@ import { DataTable } from "../../src/components/ui/data-table.tsx";
 import { useCartContext } from "../helpers/cart/context.tsx";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-  doc,
-  runTransaction,
-} from "firebase/firestore";
+import { collection, addDoc, doc, runTransaction } from "firebase/firestore";
 import { firestore } from "../helpers/firebaseConfig.ts";
 import { useAuthContext } from "@/helpers/authContext.tsx";
 import type { Discount } from "@shared/types/discount";
+import { getDiscount } from "../helpers/discount/util";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({ component: Checkout });
 
@@ -89,7 +83,7 @@ function PaymentForm({
       setCardDetails(initialCardDetails);
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again.");
     } finally {
       setIsProcessing(false);
     }
@@ -218,18 +212,13 @@ function Checkout() {
     setAppliedDiscount(0);
 
     try {
-      const codesRef = collection(firestore, "discounts");
-      const q = query(
-        codesRef,
-        where("id", "==", discountCode.trim().toLowerCase()),
-      );
-      const querySnapshot = await getDocs(q);
+      const codes = discountCode.trim().toLowerCase();
+      const discountDoc = (await getDiscount(codes)) as Discount | undefined;
 
-      if (querySnapshot.empty) {
+      if (!discountDoc || !discountDoc.percentage) {
         setDiscountMessage("Error: Invalid or expired discount code.");
         setAppliedDiscount(0);
       } else {
-        const discountDoc = querySnapshot.docs[0].data() as Discount;
         const discountPercentageInteger = discountDoc.percentage;
         const calculatedDiscountAmount =
           cartSubtotal * (discountPercentageInteger * 0.01);
@@ -254,7 +243,7 @@ function Checkout() {
 
   const handlePlaceOrder = async () => {
     if (!user) {
-      alert(
+      toast.error(
         "Simply shouldn't be possible, as this page is unreachable if not a user (and thus not add items to cart).",
       );
       return;
@@ -291,7 +280,7 @@ function Checkout() {
       const ordersRef = collection(firestore, "orders");
       await addDoc(ordersRef, orderData);
       console.log("Order successfully placed with ID:", newOrderId);
-      alert(
+      toast.error(
         `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: ${newOrderId}`,
       );
       await clearCart();
