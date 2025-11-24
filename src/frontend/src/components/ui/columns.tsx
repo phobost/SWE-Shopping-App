@@ -48,8 +48,9 @@ export const columns: ColumnDef<CartProduct>[] = [
         </div>
       );
     },
-    cell: ({ row }) => (
-      <div className="text-right">${row.original.price.toFixed(2)}</div>
-    ),
+    cell: ({ row }) => {
+      const itemTotal = row.original.price * row.original.cartQuantity;
+      return <div className="text-right">${itemTotal.toFixed(2)}</div>;
+    },
   },
 ];
