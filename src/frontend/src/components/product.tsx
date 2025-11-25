@@ -35,6 +35,7 @@ import { PartialKeys } from "@tanstack/react-table";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Badge } from "./ui/badge";
+import { USD } from "@/lib/utils";
 
 export function ProductPurchaseButtons({ product }: { product: Product }) {
   return product.isAvailable ? (
@@ -88,7 +89,7 @@ export function ProductCard({
         </Button>
       )}
       <h3 className="font-semibold text-lg">
-        {product.name} | ${product.price}
+        {product.name} | {USD.fromNumber(product.price)}
       </h3>
       <p className="text-sm text-muted-foreground">{product.description}</p>
       <p className="text-sm">In Stock: {product.quantityInStock}</p>
@@ -102,7 +103,7 @@ export function ProductDetails({ product }: { product: Product }) {
     <>
       <div className="pt-4">
         <h1 className="text-6xl font-bold">
-          {product.name} | ${product.price}
+          {product.name} | {USD.fromNumber(product.price)}
         </h1>
         <p className="text-lg text-muted-foreground">{product.description}</p>
 
@@ -153,7 +154,9 @@ export function ProductEditor({
   const [value, setValue] = React.useState(false);
   const forceUpdate = () => setValue(!value);
   const [name, setName] = React.useState(product.name);
-  const [priceStr, setPrice] = React.useState(product.price.toFixed(2));
+  const [priceStr, setPrice] = React.useState(
+    USD.fromNumber(product.price).replace("$", ""),
+  );
   const [description, setDescription] = React.useState(product.description);
   const [quantityInStock, setQuantityInStock] = React.useState<
     undefined | number
@@ -236,7 +239,7 @@ export function ProductEditor({
   const updatedProduct = {
     ...product,
     name: name.trim(),
-    price: Number(priceStr),
+    price: Number(USD.removeSymbols(priceStr)),
     quantityInStock,
     isAvailable,
     body: {
@@ -318,7 +321,6 @@ export function ProductEditor({
                         inputMode="decimal"
                         step="0.01"
                         onChange={(e) => {
-                          console.log(">>>", e.target.value);
                           if (!e) {
                             forceUpdate();
                             return;
