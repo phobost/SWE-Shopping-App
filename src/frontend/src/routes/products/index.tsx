@@ -39,6 +39,8 @@ function RouteComponent() {
   const isAdmin = context.isAdmin();
   const { data, loading, error } = useProducts();
   const [search, setSearch] = useState("");
+  const [searchByName, setSearchByName] = useState(true);
+
   const [sortPrice, setPriceSort] = React.useState<SortOrder | undefined>(
     undefined,
   );
@@ -54,12 +56,47 @@ function RouteComponent() {
     return <div>Error: {error}</div>;
   }
 
-  let filteredProducts = data.filter(
+  /*let filteredProducts = data.filter(
     (product) =>
       (product.name.toLowerCase().includes(search.toLowerCase()) ||
         product.description.toLowerCase().includes(search.toLowerCase())) &&
       (product.isAvailable || isAdmin),
+  );*/
+
+  // OLD filter
+  // let filteredProducts = data.filter(
+  //   (product) =>
+  //     (product.name.toLowerCase().includes(search.toLowerCase()) ||
+  //      product.description.toLowerCase().includes(search.toLowerCase())) &&
+  //     (product.isAvailable || isAdmin),
+  // );
+
+  // NEW filter using separate inputs
+  /*let filteredProducts = data.filter((product) => product.isAvailable || isAdmin);
+
+if (nameSearch) {
+  filteredProducts = filteredProducts.filter((product) =>
+    product.name.toLowerCase().includes(nameSearch.toLowerCase()),
   );
+}
+
+if (descSearch) {
+  filteredProducts = filteredProducts.filter((product) =>
+    product.description.toLowerCase().includes(descSearch.toLowerCase()),
+  );
+}*/
+
+  let filteredProducts = data.filter(
+    (product) => product.isAvailable || isAdmin,
+  );
+
+  if (search) {
+    filteredProducts = filteredProducts.filter((product) =>
+      searchByName
+        ? product.name.toLowerCase().includes(search.toLowerCase())
+        : product.description.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
 
   if (sortPrice !== undefined) {
     if (sortPrice === SortOrder.Ascending) {
@@ -88,12 +125,65 @@ function RouteComponent() {
         <h1 className="text-8xl font-bold tracking-tight">Products</h1>
 
         <div className="max-w-md mx-auto mt-6 flex flex-col justify-center items-center gap-2">
-          <Input
+          {/*<Input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+          />*/}
+          {/*<Input
+            type="text"
+            placeholder="Search by name..."
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
           />
+          <Input
+            type="text"
+            placeholder="Search by description..."
+            value={descSearch}
+            onChange={(e) => setDescSearch(e.target.value)}
+          />*/}
+          <Input
+            type="text"
+            placeholder={
+              searchByName ? "Search by name..." : "Search by description..."
+            }
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {/* Search mode slider */}
+          <div className="relative w-52 h-10 bg-gray-200 rounded-full flex items-center cursor-pointer select-none mt-2">
+            {/* Slider thumb */}
+            <div
+              className={`absolute top-1 left-1 w-24 h-8 bg-white rounded-full shadow-md transform transition-transform duration-200 ${
+                !searchByName ? "translate-x-full" : ""
+              }`}
+            ></div>
+
+            {/* Labels */}
+            <div
+              className="flex justify-between w-full px-2 text-sm font-medium text-gray-700 z-10"
+              onClick={() => setSearchByName(!searchByName)}
+            >
+              <span
+                className={`w-1/2 text-center ${
+                  searchByName ? "text-black" : "text-gray-500"
+                }`}
+                onClick={() => setSearchByName(true)}
+              >
+                Name
+              </span>
+              <span
+                className={`w-1/2 text-center ${
+                  !searchByName ? "text-black" : "text-gray-500"
+                }`}
+                onClick={() => setSearchByName(false)}
+              >
+                Desc
+              </span>
+            </div>
+          </div>
+
           <div className="flex flex-row gap-2 text-center">
             <Button
               className="w-50"
