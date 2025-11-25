@@ -11,6 +11,15 @@ import { UserNav } from "@/components/user-nav";
 import { Cart } from "@/components/cart";
 
 import "./__root.css";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface RouterCtx {
   auth: AuthContext;
@@ -43,12 +52,37 @@ function RootComponent() {
           {(() => {
             if (isAdmin()) {
               return (
-                <Link
-                  to="/admin/discounts"
-                  activeProps={{ className: "font-bold" }}
-                >
-                  Discounts
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button variant="secondary">Admin Routes</Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <Link
+                        to="/admin/discounts"
+                        activeProps={{ className: "font-bold" }}
+                      >
+                        Discounts
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        to="/admin/orders"
+                        activeProps={{ className: "font-bold" }}
+                      >
+                        Orders
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link
+                        to="/admin/users"
+                        activeProps={{ className: "font-bold" }}
+                      >
+                        Users
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               );
             }
           })()}
