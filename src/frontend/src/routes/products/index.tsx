@@ -1,40 +1,88 @@
-import { ProductCard, ProductPurchaseButtons } from "@/components/product";
+import { AddProductToCartButton } from "@/components/cart";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
+import { Product } from "@shared/types/product";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 export const Route = createFileRoute("/products/")({
   component: RouteComponent,
 });
 
+function ProductCard({
+  product,
+  children,
+  showAdminEdit,
+  editHref,
+}: {
+  product: Product;
+  children?: ReactNode;
+  showAdminEdit?: boolean;
+  editHref?: string;
+}) {
+  return (
+    <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
+      {showAdminEdit && editHref && (
+        <Button
+          variant="ghost"
+          size="icon"
+          asChild
+          className="absolute right-3 top-3 h-8 w-8 rounded-full"
+        >
+          <Link to={editHref}>
+            <span className="sr-only">Edit product</span>
+            ⚙️
+          </Link>
+        </Button>
+      )}
+
+      {/* Displays first image as thumbnail */}
+      {product.images?.[0] ? (
+        <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+          No Image
+        </div>
+      )}
+
+      {/* Untouched Product info */}
+      <h3 className="font-semibold text-lg">
+        {product.name} | ${product.price}
+      </h3>
+      <p className="text-sm text-muted-foreground">{product.description}</p>
+      <p className="text-sm">In Stock: {product.quantityInStock}</p>
+
+      {children && <div className="pt-4">{children}</div>}
+    </div>
+  );
+}
+
+// Main product listing page
 function RouteComponent() {
   const context = useAuthContext();
   const isAdmin = context.isAdmin();
   const { data, loading, error } = useProducts();
   const [search, setSearch] = useState("");
 
-  if (loading) {
-    return <div>Loading products...</div>;
-  }
+  if (loading) return <div>Loading products...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  const filteredProducts = data.filter(
-    (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) &&
-      (product.isAvailable || isAdmin),
+  // Filters products by search term
+  const filteredProducts = data.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center space-y-4">
         <h1 className="text-8xl font-bold tracking-tight">Products</h1>
-
         <div className="max-w-md mx-auto mt-6">
           <input
             type="text"
@@ -44,27 +92,22 @@ function RouteComponent() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Button
-          variant="secondary"
-          className="text-emerald-100 bg-emerald-600 dark:text-emerald-200 dark:bg-emerald-900"
-          asChild
-        >
-          <Link to="/products/create">
-            <PlusCircleIcon />
-            <p className="pl-2">New Product</p>
-          </Link>
-        </Button>
       </div>
 
+      {/* Product Grid */}
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <ProductCard
             product={product}
             key={product.id}
             showAdminEdit={isAdmin}
+            editHref="/products-admin"
           >
             <div className="flex flex-wrap gap-2">
-              <ProductPurchaseButtons product={product} />
+              <AddProductToCartButton product={product} />
+              <Button asChild>
+                <Link to="/checkout">Buy Now</Link>
+              </Button>
               <Button variant="secondary" asChild>
                 <Link
                   to="/products/id/$productId"

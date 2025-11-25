@@ -5,9 +5,16 @@ export interface Product {
   description: string;
   isAvailable: boolean;
   quantityInStock: number;
-  body: {
+
+  // Optional rich text body (from old branch)
+  body?: {
     markdown: string;
     html: string;
   };
-  base64Image: string | null;
+
+  // Optional base64 image (from old branch)
+  base64Image?: string | null;
+
+  // New: multiple images from Firebase Storage
+  images?: string[];
 }
