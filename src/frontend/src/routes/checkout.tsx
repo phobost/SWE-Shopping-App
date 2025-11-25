@@ -11,7 +11,7 @@ import type { Discount } from "@shared/types/discount";
 import { getDiscount } from "../helpers/discount/util";
 import { toast } from "sonner";
 import { createOrderProvider } from "@/helpers/orders/util.ts";
-import { OrderProduct } from "@shared/types/order.ts";
+import { OrderProduct, OrderStatus } from "@shared/types/order.ts";
 import { useProducts } from "@/helpers/product/context.tsx";
 import { firestore } from "@/helpers/firebaseConfig.ts";
 import { Product } from "@shared/types/product.ts";
@@ -301,6 +301,9 @@ function Checkout() {
             products: orderProducts,
             discount,
             total: finalCartTotal,
+            subtotal: cartSubtotal,
+            tax: cartTax,
+            status: OrderStatus.Pending,
             timestamp: Timestamp.now(),
           });
 
