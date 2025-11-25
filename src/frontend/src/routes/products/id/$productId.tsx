@@ -7,7 +7,7 @@ import { Product } from "@shared/types/product";
 import { AddProductToCardButton } from "@/components/cart";
 import { ref, listAll, getDownloadURL } from "firebase/storage";
 
-// Added: helper function to fetch all images from Storage for a product
+// Helper function to fetch all images from Storage for a product
 async function getProductImages(productId: string): Promise<string[]> {
   try {
     const folderRef = ref(storage, `products/${productId}`);
@@ -19,7 +19,7 @@ async function getProductImages(productId: string): Promise<string[]> {
     return urls;
   } catch (error) {
     console.error("Error fetching product images:", error);
-    return []; // return empty array if folder doesn't exist or error
+    return [];
   }
 }
 
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/products/id/$productId")({
 
     const productData = productSnapshot.data();
 
-    // Added: fetch images from Storage dynamically using product ID
+    // Fetch images from Storage dynamically using product ID
     const images = await getProductImages(productSnapshot.id);
 
     const product: Product = {
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/products/id/$productId")({
       price: productData?.price || 0,
       description: productData?.description || "",
       quantityInStock: productData?.quantityInStock || 0,
-      images, // Added: attach images array to product
+      images, // Attach images array to product
     };
 
     return { product };
