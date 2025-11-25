@@ -29,13 +29,20 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import { Textarea } from "@/components/ui/textarea";
-import { getSalePrice, setProduct } from "@/helpers/product/util";
+import {
+  getNewProductDoc,
+  getProductStorageRef,
+  getSalePrice,
+  setProduct,
+} from "@/helpers/product/util";
 import React from "react";
 import { PartialKeys } from "@tanstack/react-table";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Badge } from "./ui/badge";
 import { USD } from "@/lib/utils";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/helpers/firebaseConfig";
 
 export function ProductPurchaseButtons({ product }: { product: Product }) {
   return product.isAvailable ? (
@@ -115,8 +122,15 @@ export function ProductCard({
         )}
       </div>
       <p className="text-sm text-muted-foreground">{product.description}</p>
-      <p className="text-sm">In Stock: {product.quantityInStock}</p>
-      {children && <div className="pt-4">{children}</div>}
+
+      <div className="flex flex-col place-items-center ">
+        <img
+          src={product.primaryImageUrl}
+          className="object-cover rounded-lg snap-center"
+        />
+        <p className="text-sm">In Stock: {product.quantityInStock}</p>
+        {children && <div className="pt-4">{children}</div>}
+      </div>
     </div>
   );
 }
@@ -124,6 +138,7 @@ export function ProductCard({
 export function ProductDetails({ product }: { product: Product }) {
   const salePrice = getSalePrice(product);
   const onSale = salePrice !== product.price;
+
   return (
     <>
       <div className="pt-4">
@@ -152,6 +167,12 @@ export function ProductDetails({ product }: { product: Product }) {
         <p className="text-lg text-muted-foreground">{product.description}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <ProductPurchaseButtons product={product} />
+        </div>
+        <div className="pt-8 flex">
+          <img
+            src={product.primaryImageUrl}
+            className="object-cover rounded-lg snap-center"
+          />
         </div>
         <div className="pt-8 product-body">
           <div dangerouslySetInnerHTML={{ __html: product.body.html }}></div>
@@ -191,6 +212,11 @@ export function ProductEditor({
           markdown: "",
         },
       } as PartialKeys<Product, "id">);
+
+  if (product.id === undefined) {
+    product.id = getNewProductDoc().id;
+  }
+  product = product as Product;
 
   const [value, setValue] = React.useState(false);
   const forceUpdate = () => setValue(!value);
@@ -360,6 +386,29 @@ export function ProductEditor({
                     id="airplane-mode"
                   />
                   <Label htmlFor="airplane-mode">Availble for Purchase</Label>
+                </Field>
+
+                <Field className="grid w-full max-w-xs items-center gap-3">
+                  <Label htmlFor="picture">Set Image</Label>
+                  <Input
+                    type="file"
+                    placeholder="Picture"
+                    accept="image/*"
+                    onChange={async (event) => {
+                      if (
+                        !event.target.files ||
+                        event.target.files[0] == null
+                      ) {
+                        return;
+                      }
+
+                      const image = event.target.files[0];
+                      await uploadBytes(
+                        ref(storage, `products/${product.id}`),
+                        image,
+                      );
+                    }}
+                  />
                 </Field>
               </Field>
               <div className="grid grid-cols-3 gap-12 place-items-center justify-items-stretch place-items-start ">
@@ -608,6 +657,11 @@ export function ProductEditor({
                   const createdProduct = await setProduct({
                     ...updatedProduct,
                     quantityInStock: quantityInStock as number,
+
+                    primaryImageUrl: await getDownloadURL(
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      getProductStorageRef(product.id!),
+                    ),
                     body: {
                       markdown: updatedMarkdown,
                       html: await getHtmlBody(updatedMarkdown),

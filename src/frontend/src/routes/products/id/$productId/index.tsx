@@ -17,28 +17,30 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="flex gap-4">
-        <Button variant="secondary" asChild>
-          <Link to="/products" className="ga">
-            <CircleArrowLeftIcon />
-            <p className="pl-2">Back to shop</p>
-          </Link>
-        </Button>
-        {isAdmin ? (
-          <Button variant="destructive" asChild>
-            <Link
-              to="/products/id/$productId/edit"
-              params={{ productId: product.id }}
-            >
-              <SquarePen />
-              <p className="pl-2">Edit</p>
+      <div className="justify-center flex flex-col">
+        <div className="flex gap-4">
+          <Button variant="secondary" asChild>
+            <Link to="/products" className="ga">
+              <CircleArrowLeftIcon />
+              <p className="pl-2">Back to shop</p>
             </Link>
           </Button>
-        ) : (
-          ""
-        )}
+          {isAdmin ? (
+            <Button variant="destructive" asChild>
+              <Link
+                to="/products/id/$productId/edit"
+                params={{ productId: product.id }}
+              >
+                <SquarePen />
+                <p className="pl-2">Edit</p>
+              </Link>
+            </Button>
+          ) : (
+            ""
+          )}
+        </div>
+        <ProductDetails product={product} />
       </div>
-      <ProductDetails product={product} />
     </>
   );
 }
