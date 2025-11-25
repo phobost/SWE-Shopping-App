@@ -63,7 +63,9 @@ function ProductDetails() {
             </div>
           ) : (
             <div className="mt-6">
-              <p className="text-sm text-muted-foreground">This product is no longer available for purchase.</p>
+              <p className="text-sm text-muted-foreground">
+                This product is no longer available for purchase.
+              </p>
             </div>
           )}
         </div>
