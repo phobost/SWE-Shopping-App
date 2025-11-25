@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Product } from "@shared/types/product";
 import { Button } from "./ui/button";
 import { Link, useRouter } from "@tanstack/react-router";
-import { AddProductToCardButton } from "./cart";
+import { AddProductToCartButton } from "./cart";
 import { ReactNode } from "react";
 import {
   Field,
@@ -32,6 +32,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { setProduct } from "@/helpers/product/util";
 import React from "react";
 import { PartialKeys } from "@tanstack/react-table";
+import { Label } from "./ui/label";
+import { Switch } from "./ui/switch";
+import { Badge } from "./ui/badge";
+
+export function ProductPurchaseButtons({ product }: { product: Product }) {
+  return product.isAvailable ? (
+    <>
+      {product.quantityInStock > 0 ? (
+        <>
+          <AddProductToCartButton product={product} />
+          <Button>
+            <Link to="/checkout">Buy now</Link>
+          </Button>
+        </>
+      ) : (
+        <>
+          <Badge variant="destructive" className="!bg-zinc-700">
+            Out of Stock
+          </Badge>
+        </>
+      )}
+    </>
+  ) : (
+    <Badge variant="destructive">Not Available</Badge>
+  );
+}
 
 export function ProductCard({
   product,
@@ -81,10 +107,7 @@ export function ProductDetails({ product }: { product: Product }) {
         <p className="text-lg text-muted-foreground">{product.description}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          <Button asChild>
-            <Link to="/checkout">Buy Now</Link>
-          </Button>
-          <AddProductToCardButton product={product} />
+          <ProductPurchaseButtons product={product} />
         </div>
 
         <div className="pt-8 product-body">
@@ -140,6 +163,7 @@ export function ProductEditor({
     quantityInStock !== undefined ? quantityInStock : "";
   const [markdownBody, setMarkdownBody] = React.useState(product.body.markdown);
   const [htmlBody, setHtmlBody] = React.useState(product.body.html);
+  const [isAvailable, setIsAvailable] = React.useState(product.isAvailable);
 
   const validate = {
     name: () => {
@@ -214,6 +238,7 @@ export function ProductEditor({
     name: name.trim(),
     price: Number(priceStr),
     quantityInStock,
+    isAvailable,
     body: {
       markdown: markdownBody,
       html: htmlBody,
@@ -265,6 +290,14 @@ export function ProductEditor({
                   }}
                 />
                 <ValidationError msg={validate.name()} />
+                <Field orientation="horizontal">
+                  <Switch
+                    checked={isAvailable}
+                    onClick={() => setIsAvailable(!isAvailable)}
+                    id="airplane-mode"
+                  />
+                  <Label htmlFor="airplane-mode">Availble for Purchase</Label>
+                </Field>
               </Field>
               <div className="grid grid-cols-4 gap-2">
                 <div>
@@ -383,6 +416,10 @@ export function ProductEditor({
                   </Field>
                   <ValidationError msg={validate.quantityInStock()} />
                 </div>
+                <div>
+                  <Field></Field>
+                  <ValidationError msg={validate.quantityInStock()} />
+                </div>
               </div>
               <Field>
                 <FieldLabel htmlFor="product-short-description-field">
@@ -426,6 +463,7 @@ export function ProductEditor({
               <ValidationError msg={validate.body()} />
             </FieldGroup>
           </FieldSet>
+
           <Field orientation="horizontal">
             {formHasError() ? (
               <Button type="submit" disabled>
@@ -441,7 +479,7 @@ export function ProductEditor({
                     return;
                   }
 
-                  if (!quantityInStock) {
+                  if (quantityInStock == undefined) {
                     throw new Error(
                       "Quantity in stock as still not available after form check was done!",
                     );
