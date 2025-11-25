@@ -2,18 +2,16 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   addDoc,
   collection,
-  CollectionReference,
   doc,
   DocumentData,
-  DocumentReference,
-  DocumentSnapshot,
   getDoc,
   getDocs,
   onSnapshot,
   query,
   QueryDocumentSnapshot,
   QuerySnapshot,
-  setDoc,
+  SetOptions,
+  Transaction,
 } from "firebase/firestore";
 import { firestore } from "./firebaseConfig";
 import firebase from "firebase/compat/app";
@@ -37,34 +35,6 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
   type FirestoreDataTypeOptionalId = PartialKeys<FirestoreDataType, "id">;
   type FirestoreDataTypeWithoutId = Omit<FirestoreDataType, "id">;
 
-  interface FirestoreAccessors {
-    getRef: (id: string) => DocumentReference<DocumentData, DocumentData>;
-    getCollection: () => CollectionReference<
-      FirestoreDataType,
-      firebase.firestore.DocumentData
-    >;
-    create: (item: FirestoreDataTypeWithoutId) => Promise<FirestoreDataType>;
-    set: (
-      item: FirestoreDataTypeOptionalId | FirestoreDataType,
-    ) => Promise<FirestoreDataType>;
-    get: (id: string) => Promise<
-      | {
-          data: FirestoreDataType;
-          doc: DocumentSnapshot<DocumentData, DocumentData>;
-        }
-      | undefined
-    >;
-  }
-
-  interface FirestoreDataContextType {
-    data: FirestoreDataType[];
-    loading: boolean;
-    snapshot: DataQuerySnapshot | undefined;
-    error: string | null;
-    firestore: FirestoreAccessors;
-    refresh: () => Promise<void>;
-  }
-
   const dataConverter = {
     toFirestore(item: FirestoreDataType): firebase.firestore.DocumentData {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,9 +52,17 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
     },
   };
 
-  const firestoreAccessors: FirestoreAccessors = {
+  const firestoreAccessorsUtil = {
+    getNewRef: () => {
+      return doc(firestoreAccessorsUtil.getCollection());
+    },
     getRef: (id: string) => {
-      return doc(firestore, collectionName, ...collectionPathSegments, id);
+      return doc(
+        firestore,
+        collectionName,
+        ...collectionPathSegments,
+        id,
+      ).withConverter(dataConverter);
     },
     getCollection: () => {
       return collection(
@@ -94,7 +72,8 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
       ).withConverter(dataConverter);
     },
     create: async (item: FirestoreDataTypeWithoutId) => {
-      const id = (await addDoc(firestoreAccessors.getCollection(), item)).id;
+      const id = (await addDoc(firestoreAccessorsUtil.getCollection(), item))
+        .id;
 
       return {
         ...item,
@@ -102,7 +81,7 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
       } as FirestoreDataType;
     },
     get: async (id: string) => {
-      const ref = firestoreAccessors.getRef(id);
+      const ref = firestoreAccessorsUtil.getRef(id);
       const docRef = await getDoc(ref);
       if (docRef.exists() && docRef.id != id) {
         throw new Error(
@@ -122,16 +101,75 @@ export const createFirestoreContext = function <DataType extends DocumentData>(
 
       return { data: item, doc: docRef };
     },
-    set: async (item: FirestoreDataTypeOptionalId | FirestoreDataType) => {
-      if (item.id) {
-        const { id, ...itemWithoutId } = item as FirestoreDataType;
-        await setDoc(firestoreAccessors.getRef(id), itemWithoutId);
-      } else {
-        item = await firestoreAccessors.create(item);
-      }
-      return item as FirestoreDataType;
+    transact: (transaction: Transaction) => {
+      return {
+        set: (data: FirestoreDataTypeOptionalId, options?: SetOptions) => {
+          let ref = undefined;
+          let dataWithoutId: FirestoreDataTypeWithoutId | undefined = undefined;
+          if (data.id) {
+            const { id, ...rest } = data;
+            ref = firestoreAccessorsUtil.getRef(id);
+            dataWithoutId = rest as unknown as FirestoreDataTypeWithoutId;
+          } else {
+            ref = firestoreAccessorsUtil.getNewRef();
+            dataWithoutId = data;
+          }
+          if (options) {
+            return transaction.set(ref, dataWithoutId, options);
+          } else {
+            return transaction.set(ref, dataWithoutId);
+          }
+        },
+        create: (data: FirestoreDataTypeOptionalId, options?: SetOptions) => {
+          const ref = firestoreAccessorsUtil.getNewRef();
+          let dataWithoutId: FirestoreDataTypeWithoutId | undefined = undefined;
+          if (data.id) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { id, ...rest } = data;
+            dataWithoutId = rest as unknown as FirestoreDataTypeWithoutId;
+          } else {
+            dataWithoutId = data;
+          }
+
+          const created = {
+            id: ref.id,
+            ...dataWithoutId,
+          } as FirestoreDataType;
+          if (options) {
+            return {
+              created,
+              res: transaction.set(ref, dataWithoutId, options),
+            };
+          } else {
+            return { created, res: transaction.set(ref, dataWithoutId) };
+          }
+        },
+        get: (id: string) => {
+          return transaction.get(firestoreAccessors.getRef(id));
+        },
+        update: (data: FirestoreDataType) => {
+          const { id, ...rest } = data;
+          return transaction.update(firestoreAccessors.getRef(id), rest);
+        },
+        delete: (id: string) => {
+          return transaction.delete(firestoreAccessors.getRef(id));
+        },
+      };
     },
   };
+
+  const firestoreAccessors = {
+    ...firestoreAccessorsUtil,
+  };
+
+  interface FirestoreDataContextType {
+    data: FirestoreDataType[];
+    loading: boolean;
+    snapshot: DataQuerySnapshot | undefined;
+    error: string | null;
+    firestore: typeof firestoreAccessors;
+    refresh: () => Promise<void>;
+  }
 
   const FirestoreDataContext = createContext<
     FirestoreDataContextType | undefined
