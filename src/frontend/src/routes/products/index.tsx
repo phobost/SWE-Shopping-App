@@ -4,8 +4,7 @@ import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
 import { Product } from "@shared/types/product";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ReactNode } from "react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 export const Route = createFileRoute("/products/")({
   component: RouteComponent,
@@ -22,7 +21,6 @@ function ProductCard({
   showAdminEdit?: boolean;
   editHref?: string;
 }) {
-  // TODO: Include the image of the product
   return (
     <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
       {showAdminEdit && editHref && (
@@ -38,30 +36,45 @@ function ProductCard({
           </Link>
         </Button>
       )}
+
+      {/* Displays first image as thumbnail */}
+      {product.images?.[0] ? (
+        <div className="w-full h-48 rounded-lg overflow-hidden mb-4">
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="w-full h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+          No Image
+        </div>
+      )}
+
+      {/* Untouched Product info */}
       <h3 className="font-semibold text-lg">
         {product.name} | ${product.price}
       </h3>
       <p className="text-sm text-muted-foreground">{product.description}</p>
       <p className="text-sm">In Stock: {product.quantityInStock}</p>
+
       {children && <div className="pt-4">{children}</div>}
     </div>
   );
 }
 
+// Main product listing page
 function RouteComponent() {
   const context = useAuthContext();
   const isAdmin = context.isAdmin();
   const { data, loading, error } = useProducts();
   const [search, setSearch] = useState("");
 
-  if (loading) {
-    return <div>Loading products...</div>;
-  }
+  if (loading) return <div>Loading products...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+  // Filters products by search term
   const filteredProducts = data.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -70,7 +83,6 @@ function RouteComponent() {
     <div className="container mx-auto px-4 py-16">
       <div className="text-center space-y-4">
         <h1 className="text-8xl font-bold tracking-tight">Products</h1>
-
         <div className="max-w-md mx-auto mt-6">
           <input
             type="text"
@@ -82,6 +94,7 @@ function RouteComponent() {
         </div>
       </div>
 
+      {/* Product Grid */}
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <ProductCard

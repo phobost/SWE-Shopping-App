@@ -4,5 +4,5 @@ export interface Product {
   price: number;
   description: string;
   quantityInStock: number;
-  base64Image: string | null;
+  images: string[];
 }
