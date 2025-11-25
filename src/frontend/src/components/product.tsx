@@ -213,11 +213,6 @@ export function ProductEditor({
         },
       } as PartialKeys<Product, "id">);
 
-  if (product.id === undefined) {
-    product.id = getNewProductDoc().id;
-  }
-  product = product as Product;
-
   const [value, setValue] = React.useState(false);
   const forceUpdate = () => setValue(!value);
   const [name, setName] = React.useState(product.name);
@@ -238,7 +233,16 @@ export function ProductEditor({
 
   const [markdownBody, setMarkdownBody] = React.useState(product.body.markdown);
   const [htmlBody, setHtmlBody] = React.useState(product.body.html);
-  const [isAvailable, setIsAvailable] = React.useState(product.isAvailable);
+  const [isAvailable, setIsAvailable] = React.useState(
+    product.isAvailable === undefined ? true : product.isAvailable,
+  );
+  const [primaryImageUrl, setPrimaryImageUrl] = React.useState(
+    product.primaryImageUrl,
+  );
+
+  const [primaryImage, setPrimaryImage] = React.useState<File | undefined>(
+    undefined,
+  );
 
   const validate = {
     name: () => {
@@ -264,6 +268,11 @@ export function ProductEditor({
 
       if (priceNum < 0) {
         return "Price cannot be negative!";
+      }
+    },
+    primaryImage: () => {
+      if (primaryImage === undefined && primaryImageUrl === undefined) {
+        return "Image may not be empty!";
       }
     },
     quantityInStock: () => {
@@ -322,9 +331,11 @@ export function ProductEditor({
   };
 
   const updatedProduct = {
+    id: getNewProductDoc().id,
     ...product,
     name: name.trim(),
     price: Number(USD.removeSymbols(priceStr)),
+    primaryImageUrl,
     quantityInStock,
     isAvailable,
     salePercentage: salePercentage || 0,
@@ -353,9 +364,7 @@ export function ProductEditor({
         <DialogContent className="max-w-fit min-w-19/20 overflow-y-auto h-5/6">
           <ScrollArea className="flex pr-4">
             <div className="pointer-events-none">
-              <ProductDetails
-                product={{ id: "fake-id", ...updatedProduct } as Product}
-              />
+              <ProductDetails product={{ ...updatedProduct } as Product} />
             </div>
           </ScrollArea>
         </DialogContent>
@@ -403,12 +412,16 @@ export function ProductEditor({
                       }
 
                       const image = event.target.files[0];
-                      await uploadBytes(
-                        ref(storage, `products/${product.id}`),
+                      const res = await uploadBytes(
+                        ref(storage, `products/${product.id}/edit-primary`),
                         image,
                       );
+                      setPrimaryImage(image);
+                      setPrimaryImageUrl(await getDownloadURL(res.ref));
                     }}
                   />
+
+                  <ValidationError msg={validate.primaryImage()} />
                 </Field>
               </Field>
               <div className="grid grid-cols-3 gap-12 place-items-center justify-items-stretch place-items-start ">
@@ -654,14 +667,22 @@ export function ProductEditor({
                   }
 
                   const updatedMarkdown = updatedProduct.body.markdown.trim();
+                  let imageUrl = primaryImageUrl;
+                  if (primaryImage !== undefined) {
+                    imageUrl = await getDownloadURL(
+                      (
+                        await uploadBytes(
+                          getProductStorageRef(updatedProduct.id),
+                          primaryImage,
+                        )
+                      ).ref,
+                    );
+                  }
+
                   const createdProduct = await setProduct({
                     ...updatedProduct,
                     quantityInStock: quantityInStock as number,
-
-                    primaryImageUrl: await getDownloadURL(
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      getProductStorageRef(product.id!),
-                    ),
+                    primaryImageUrl: imageUrl,
                     body: {
                       markdown: updatedMarkdown,
                       html: await getHtmlBody(updatedMarkdown),
