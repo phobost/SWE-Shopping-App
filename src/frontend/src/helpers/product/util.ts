@@ -7,9 +7,18 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { COLLECTION_NAMES } from "@shared/constants";
-import { firestore } from "../firebaseConfig";
+import { firestore, storage } from "../firebaseConfig";
 import { Product } from "@shared/types/product";
 import { PartialKeys } from "@tanstack/react-table";
+import { ref } from "firebase/storage";
+
+export const getNewProductDoc = () => {
+  return doc(collection(firestore, COLLECTION_NAMES.products()));
+};
+
+export const getProductStorageRef = (id: string) => {
+  return ref(storage, `products/${id}`);
+};
 
 export const getProductRef = (id: string) => {
   return doc(firestore, COLLECTION_NAMES.products(), id);
