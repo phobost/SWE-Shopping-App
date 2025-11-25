@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import { Product } from "@shared/types/product";
 import { Icons } from "@/components/icons";
 import { ShoppingCart } from "lucide-react";
+import { getSalePrice } from "@/helpers/product/util";
+import { USD } from "@/lib/utils";
 
 export function Cart() {
   const cartContext = useCartContext();
@@ -22,7 +24,7 @@ export function Cart() {
 
   // tax + totals
   const subtotal = cartContext.cartProducts.reduce(
-    (total, product) => total + product.price * product.cartQuantity,
+    (total, product) => total + getSalePrice(product) * product.cartQuantity,
     0,
   );
   const tax = 0.0825 * subtotal;
@@ -125,17 +127,19 @@ export function Cart() {
               <div className="space-y-1">
                 <div className="flex justify-between">
                   <span className="font-medium">Subtotal:</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium">
+                    {USD.fromNumber(subtotal)}
+                  </span>
                 </div>
 
                 <div className="flex justify-between">
                   <span className="font-medium">Tax:</span>
-                  <span className="font-medium">${tax.toFixed(2)}</span>
+                  <span className="font-medium">{USD.fromNumber(tax)}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span className="font-semibold">Total:</span>
-                  <span className="font-semibold">${total.toFixed(2)}</span>
+                  <span className="font-semibold">{USD.fromNumber(total)}</span>
                 </div>
 
                 <div className="flex justify-end pt-1">
