@@ -1,31 +1,50 @@
 import { ProductCard, ProductPurchaseButtons } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PlusCircleIcon } from "lucide-react";
-import { useState } from "react";
+import { ArrowDown, ArrowUp, ArrowUpDown, PlusCircleIcon } from "lucide-react";
+import React, { useState } from "react";
 
 export const Route = createFileRoute("/products/")({
   component: RouteComponent,
 });
+
+enum SortOrder {
+  Ascending,
+  Descending,
+}
+
+const invertSortOrder = (sort: SortOrder | undefined): SortOrder => {
+  if (sort == SortOrder.Descending) {
+    return SortOrder.Ascending;
+  }
+  return SortOrder.Descending;
+};
+
+const SortArrow = ({ sort }: { sort: SortOrder | undefined }) => {
+  switch (sort) {
+    case SortOrder.Ascending:
+      return <ArrowUp className="ml-2 h-4 w-4" />;
+    case SortOrder.Descending:
+      return <ArrowDown className="ml-2 h-4 w-4" />;
+    default:
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+  }
+};
 
 function RouteComponent() {
   const context = useAuthContext();
   const isAdmin = context.isAdmin();
   const { data, loading, error } = useProducts();
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<string>("none");
+  const [sortPrice, setPriceSort] = React.useState<SortOrder | undefined>(
+    undefined,
+  );
+  const [sortQuantity, setQuantitySort] = React.useState<SortOrder | undefined>(
+    undefined,
+  );
 
   if (loading) {
     return <div>Loading products...</div>;
@@ -41,26 +60,26 @@ function RouteComponent() {
       (product.isAvailable || isAdmin),
   );
 
-  // Apply sorting based on selected option
-  switch (sortBy) {
-    case "price-asc":
+  if (sortPrice !== undefined) {
+    if (sortPrice === SortOrder.Ascending) {
       filteredProducts = filteredProducts.sort((a, b) => a.price - b.price);
-      break;
-    case "price-desc":
+    } else {
       filteredProducts = filteredProducts.sort((a, b) => b.price - a.price);
-      break;
-    case "availability":
-      // Available products first (isAvailable !== false), then unavailable
-      filteredProducts = filteredProducts.sort((a, b) => {
-        const aAvailable = a.isAvailable !== false ? 1 : 0;
-        const bAvailable = b.isAvailable !== false ? 1 : 0;
-        return bAvailable - aAvailable;
-      });
-      break;
-    default:
-      // No sorting
-      break;
+    }
   }
+  if (sortQuantity !== undefined) {
+    if (sortQuantity === SortOrder.Ascending) {
+      filteredProducts = filteredProducts.sort(
+        (a, b) => a.quantityInStock - b.quantityInStock,
+      );
+    } else {
+      filteredProducts = filteredProducts.sort(
+        (a, b) => b.quantityInStock - a.quantityInStock,
+      );
+    }
+  }
+
+  console.log(filteredProducts.map((v) => v.price));
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -74,20 +93,30 @@ function RouteComponent() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Sort by..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sort Options</SelectLabel>
-                <SelectItem value="none">No sorting</SelectItem>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                <SelectItem value="availability">Availability</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-row gap-2 text-center">
+            <Button
+              className="w-50"
+              variant="outline"
+              onClick={() => {
+                setPriceSort(invertSortOrder(sortPrice));
+                setQuantitySort(undefined);
+              }}
+            >
+              <SortArrow sort={sortPrice} />
+              Price
+            </Button>
+            <Button
+              className="w-50"
+              variant="outline"
+              onClick={() => {
+                setQuantitySort(invertSortOrder(sortQuantity));
+                setPriceSort(undefined);
+              }}
+            >
+              <SortArrow sort={sortQuantity} />
+              Availability
+            </Button>
+          </div>
         </div>
         {isAdmin ? (
           <Button
