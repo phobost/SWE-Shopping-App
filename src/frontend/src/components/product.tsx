@@ -43,14 +43,20 @@ import { Badge } from "./ui/badge";
 import { USD } from "@/lib/utils";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/helpers/firebaseConfig";
+import { useCartContext } from "@/helpers/cart/context";
 
 export function ProductPurchaseButtons({ product }: { product: Product }) {
+  const { addToCart } = useCartContext();
   return product.isAvailable ? (
     <>
       {product.quantityInStock > 0 ? (
         <>
           <AddProductToCartButton product={product} />
-          <Button>
+          <Button
+            onClick={async () => {
+              await addToCart(product.id);
+            }}
+          >
             <Link to="/checkout">Buy now</Link>
           </Button>
         </>
