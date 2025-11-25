@@ -1,15 +1,14 @@
 import { Orders } from "@/components/order";
-import { getAllOrders } from "@/helpers/orders/util";
+import { getAllUserOrders } from "@/helpers/orders/util";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/admin/orders")({
+export const Route = createFileRoute("/orders")({
   beforeLoad: async ({ context }) => {
-    if (!context.auth.isAdmin()) {
+    if (!context.auth.user) {
       throw redirect({ to: "/" });
     }
-
     return {
-      orders: await getAllOrders(),
+      orders: await getAllUserOrders(context.auth.user.uid),
     };
   },
   component: RouteComponent,
@@ -17,5 +16,6 @@ export const Route = createFileRoute("/admin/orders")({
 
 function RouteComponent() {
   const { orders, auth } = Route.useRouteContext();
+
   return <Orders orders={orders} isAdmin={auth.isAdmin()} />;
 }

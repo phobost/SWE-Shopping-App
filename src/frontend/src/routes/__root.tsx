@@ -37,8 +37,8 @@ function RootComponent() {
           <Link to="/products" activeProps={{ className: "font-bold" }}>
             Products
           </Link>
-          <Link to="/about" activeProps={{ className: "font-bold" }}>
-            About
+          <Link to="/orders" activeProps={{ className: "font-bold" }}>
+            Orders
           </Link>
           {(() => {
             if (isAdmin()) {

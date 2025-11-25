@@ -2,7 +2,12 @@ import { initializeApp, getApps } from "firebase/app";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
+import {
+  getFunctions,
+  connectFunctionsEmulator,
+  httpsCallable,
+} from "firebase/functions";
+import { GetUserRequest, GetUserResponse } from "@shared/functions/types";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_PUBLIC_FIREBASE_API_KEY,
@@ -20,6 +25,10 @@ export const auth = getAuth(firebaseApp);
 export const firestore = getFirestore(firebaseApp);
 export const storage = getStorage(firebaseApp);
 export const functions = getFunctions(firebaseApp);
+
+export const callables = {
+  getUser: httpsCallable<GetUserRequest, GetUserResponse>(functions, "getUser"),
+};
 
 if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {
   console.log("Using firebase emulators!");
