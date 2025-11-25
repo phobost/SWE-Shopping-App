@@ -5,13 +5,16 @@ import { DataTable } from "../../src/components/ui/data-table.tsx";
 import { useCartContext } from "../helpers/cart/context.tsx";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { Timestamp } from "firebase/firestore";
+import { runTransaction, Timestamp } from "firebase/firestore";
 import { useAuthContext } from "@/helpers/authContext.tsx";
 import type { Discount } from "@shared/types/discount";
 import { getDiscount } from "../helpers/discount/util";
 import { toast } from "sonner";
 import { createOrderProvider } from "@/helpers/orders/util.ts";
 import { OrderProduct } from "@shared/types/order.ts";
+import { useProducts } from "@/helpers/product/context.tsx";
+import { firestore } from "@/helpers/firebaseConfig.ts";
+import { Product } from "@shared/types/product.ts";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutWithOrderProvider,
@@ -214,6 +217,7 @@ function Checkout() {
   const user = authContext.user;
   const { useContext } = Route.useRouteContext();
   const orderContext = useContext();
+  const productsContext = useProducts();
 
   const cartSubtotal = cartProducts.reduce(
     (total, product) => total + product.price * product.cartQuantity,
@@ -284,19 +288,40 @@ function Checkout() {
           quantityOrdered: cProduct.cartQuantity,
         };
       });
-      const order = await orderContext.firestore.create({
-        userId: user.uid,
-        products: orderProducts,
-        discount,
-        total: finalCartTotal,
-        timestamp: Timestamp.now(),
+      const updatedProducts: Product[] = cartProducts.map((cProduct) => {
+        const { cartQuantity, ...rest } = cProduct;
+        rest.quantityInStock = rest.quantityInStock - cartQuantity;
+        return rest;
       });
+      await runTransaction(firestore, async (transaction) => {
+        const { created } = orderContext.firestore
+          .transact(transaction)
+          .create({
+            userId: user.uid,
+            products: orderProducts,
+            discount,
+            total: finalCartTotal,
+            timestamp: Timestamp.now(),
+          });
 
-      console.log("Order successfully placed with ID:", order.id);
-      toast.success(
-        `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: '${order.id}'`,
-      );
-      await clearCart();
+        const products = productsContext.data.filter((product) =>
+          orderProducts.find((orderProduct) => orderProduct.id == product.id),
+        );
+
+        const productTransaction =
+          productsContext.firestore.transact(transaction);
+
+        updatedProducts.forEach((product) => {
+          productTransaction.update(product);
+        });
+
+        console.log(">>>", products);
+        console.log("Order successfully placed with ID:", created.id);
+        toast.success(
+          `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: '${created.id}'`,
+        );
+        await clearCart();
+      });
     } catch (error) {
       console.error("Error processing order:", error);
       throw new Error("Failed to save order details.");
