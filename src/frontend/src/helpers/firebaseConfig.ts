@@ -28,6 +28,11 @@ export const functions = getFunctions(firebaseApp);
 
 export const callables = {
   getUser: httpsCallable<GetUserRequest, GetUserResponse>(functions, "getUser"),
+  getAllUsers: httpsCallable(functions, "getAllusers"),
+  setUserRole: httpsCallable<{ userId: string; role: string }, { success: boolean }>(
+    functions,
+    "setUserRole"
+  ),
 };
 
 if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS) {

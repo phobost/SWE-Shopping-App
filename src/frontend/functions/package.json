@@ -17,8 +17,8 @@
     "firebase-functions": "^7.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@tsconfig/recommended": "^1.0.12"
+    "@tsconfig/recommended": "^1.0.12",
+    "typescript": "^5.0.0"
   },
   "private": true
 }
