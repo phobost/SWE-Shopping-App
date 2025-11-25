@@ -491,7 +491,7 @@ export function ProductEditor({
                           onClick={() => {
                             let newQuant =
                               (quantityInStock ? quantityInStock : 0) - 1;
-                            newQuant = Math.max(newQuant, 0);
+                            newQuant = Math.min(Math.max(newQuant, 0), 100);
 
                             setQuantityInStock(newQuant);
                           }}
@@ -591,7 +591,9 @@ export function ProductEditor({
                             const newQuant =
                               (salePercentage ? salePercentage : 0) + 1;
 
-                            setSalePercentage(Math.max(newQuant, 100));
+                            setSalePercentage(
+                              Math.min(Math.max(newQuant, 0), 100),
+                            );
                           }}
                         >
                           <CirclePlusIcon />
