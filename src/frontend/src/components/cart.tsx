@@ -163,7 +163,7 @@ export function Cart() {
   );
 }
 
-export function AddProductToCardButton({ product }: { product: Product }) {
+export function AddProductToCartButton({ product }: { product: Product }) {
   const { addToCart } = useCartContext();
   const [adding, setAdding] = useState(false);
 
@@ -184,11 +184,9 @@ export function AddProductToCardButton({ product }: { product: Product }) {
     }
   };
 
-  const isOutOfStock = product.quantityInStock === 0;
-
   return (
-    <Button onClick={handleAddToCart} disabled={adding || isOutOfStock}>
-      {adding ? "Adding..." : isOutOfStock ? "Out of Stock" : "Add to Cart"}
+    <Button onClick={handleAddToCart} disabled={adding}>
+      {adding ? "Adding..." : "Add to Cart"}
     </Button>
   );
 }

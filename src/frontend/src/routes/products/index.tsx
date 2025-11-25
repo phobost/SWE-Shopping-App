@@ -1,5 +1,4 @@
-import { AddProductToCardButton } from "@/components/cart";
-import { ProductCard } from "@/components/product";
+import { ProductCard, ProductPurchaseButtons } from "@/components/product";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/helpers/authContext";
 import { useProducts } from "@/helpers/product/context";
@@ -25,8 +24,10 @@ function RouteComponent() {
     return <div>Error: {error}</div>;
   }
 
-  const filteredProducts = data.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase()),
+  const filteredProducts = data.filter(
+    (product) =>
+      product.name.toLowerCase().includes(search.toLowerCase()) &&
+      (product.isAvailable || isAdmin),
   );
 
   return (
@@ -63,10 +64,7 @@ function RouteComponent() {
             showAdminEdit={isAdmin}
           >
             <div className="flex flex-wrap gap-2">
-              <AddProductToCardButton product={product} />
-              <Button asChild>
-                <Link to="/checkout">Buy Now</Link>
-              </Button>
+              <ProductPurchaseButtons product={product} />
               <Button variant="secondary" asChild>
                 <Link
                   to="/products/id/$productId"

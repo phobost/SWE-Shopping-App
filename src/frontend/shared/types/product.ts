@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   price: number;
   description: string;
+  isAvailable: boolean;
   quantityInStock: number;
   body: {
     markdown: string;

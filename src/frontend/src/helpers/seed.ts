@@ -7,6 +7,7 @@ import { setDiscount } from "./discount/util";
 const SEED_PRODUCTS: Omit<Product, "id">[] = [
   {
     name: "Genuine Moon Rock",
+    isAvailable: true,
     price: 20.0,
     body: {
       markdown: "",
@@ -19,6 +20,7 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
   },
   {
     name: "Coende Crunch Alden",
+    isAvailable: true,
     price: 5.49,
     quantityInStock: 20,
     body: {
@@ -31,6 +33,7 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
   },
   {
     name: "Bottle of Stardust",
+    isAvailable: true,
     price: 29.99,
     quantityInStock: 8,
     body: {
@@ -43,6 +46,7 @@ const SEED_PRODUCTS: Omit<Product, "id">[] = [
   },
   {
     name: "Pluto's Pet Plushle",
+    isAvailable: true,
     price: 12.0,
     quantityInStock: 7,
     body: {
