@@ -14,6 +14,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Product } from "@shared/types/product";
 import { Icons } from "@/components/icons";
+import { ShoppingCart } from "lucide-react";
 
 export function Cart() {
   const cartContext = useCartContext();
@@ -56,7 +57,7 @@ export function Cart() {
           variant="ghost"
           className="relative h-8 w-8 rounded-full p-0 overflow-hidden"
         >
-          🛒
+          <ShoppingCart />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" align="end" forceMount>
