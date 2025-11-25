@@ -56,7 +56,8 @@ function RouteComponent() {
 
   let filteredProducts = data.filter(
     (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) &&
+      (product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.description.toLowerCase().includes(search.toLowerCase())) &&
       (product.isAvailable || isAdmin),
   );
 
