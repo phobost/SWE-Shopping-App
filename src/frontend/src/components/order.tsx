@@ -39,11 +39,12 @@ import { Timestamp } from "firebase/firestore";
 import { setOrder, UserOrder } from "@/helpers/orders/util";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Badge } from "./ui/badge";
+import { getSalePrice } from "@/helpers/product/util";
 
 const getStatusColor = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.Pending:
-      return "bg-slate-400 dark:bg-slate-700";
+      return "bg-slate-400 dark:bg-slate-500";
     case OrderStatus.InProgress:
       return "bg-cyan-400 dark:bg-cyan-900";
     case OrderStatus.Shipped:
@@ -65,22 +66,44 @@ function OrderProductsTable({ order }: { order: Order }) {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Product</TableHead>
-            <TableHead>Cost</TableHead>
+            <TableHead>Cost per Unit</TableHead>
             <TableHead>Quantity</TableHead>
             <TableHead className="text-right">Cost</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {order.products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell className="font-medium">{product.name}</TableCell>
-              <TableCell>{USD.fromNumber(product.price)}</TableCell>
-              <TableCell>{product.quantityOrdered}</TableCell>
-              <TableCell className="text-right">
-                {USD.fromNumber(product.price * product.quantityOrdered)}
-              </TableCell>
-            </TableRow>
-          ))}
+          {order.products.map((product) => {
+            const salePrice = getSalePrice(product);
+            const onSale = salePrice != product.price;
+
+            return (
+              <TableRow key={product.id}>
+                <TableCell className="font-medium">{product.name}</TableCell>
+                <TableCell className="flex flex-row gap-2">
+                  {
+                    <>
+                      <div
+                        className={onSale ? "line-through text-red-600" : ""}
+                      >
+                        {USD.fromNumber(product.price)}
+                      </div>
+                      {onSale ? (
+                        <div className="font-bold text-green-300 dark:text-green-800">
+                          {USD.fromNumber(salePrice)}
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </>
+                  }
+                </TableCell>
+                <TableCell>{product.quantityOrdered}</TableCell>
+                <TableCell className="text-right">
+                  {USD.fromNumber(salePrice * product.quantityOrdered)}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
         <TableFooter>
           <TableRow className="">
@@ -144,9 +167,9 @@ export function OrderDetail({ order }: { order: Order }) {
 const SortArrow = ({ sort }: { sort: false | SortDirection }) => {
   switch (sort) {
     case "asc":
-      return <ArrowDown className="ml-2 h-4 w-4" />;
-    case "desc":
       return <ArrowUp className="ml-2 h-4 w-4" />;
+    case "desc":
+      return <ArrowDown className="ml-2 h-4 w-4" />;
     default:
       return <ArrowUpDown className="ml-2 h-4 w-4" />;
   }

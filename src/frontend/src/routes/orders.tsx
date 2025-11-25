@@ -7,8 +7,9 @@ export const Route = createFileRoute("/orders")({
     if (!context.auth.user) {
       throw redirect({ to: "/" });
     }
+
     return {
-      orders: await getAllUserOrders(context.auth.user.uid),
+      orders: await getAllUserOrders(context.auth.user),
     };
   },
   component: RouteComponent,

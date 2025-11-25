@@ -11,6 +11,7 @@ import {
   setDoc,
 } from "@firebase/firestore";
 import { PartialKeys } from "@tanstack/react-table";
+import { User } from "firebase/auth";
 
 export const createOrderProvider = (userId: string) => {
   return createFirestoreContext<Order>(COLLECTION_NAMES.orders(userId));
@@ -20,11 +21,9 @@ export type UserOrder = Order & {
   userIdentifier: string;
 };
 
-export const getAllUserOrders = async (
-  userId: string,
-): Promise<UserOrder[]> => {
+export const getAllUserOrders = async (user: User): Promise<UserOrder[]> => {
   const snapshot = await getDocs(
-    collection(firestore, COLLECTION_NAMES.orders(userId)),
+    collection(firestore, COLLECTION_NAMES.orders(user.uid)),
   );
 
   const orders = snapshot.docs.map(async (doc) => {
@@ -33,7 +32,6 @@ export const getAllUserOrders = async (
       ...doc.data(),
     } as Order;
 
-    const user = (await callables.getUser({ userId: order.userId })).data;
     const userIdentifier = user.email || `(Unknown Identifier) ${user.uid}`;
 
     return { ...order, userIdentifier } as UserOrder;

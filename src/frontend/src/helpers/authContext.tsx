@@ -71,7 +71,7 @@ export const AuthContextProvider = ({
     if (user?.uid) {
       const userRef = doc(firestore, DOCUMENT_NAMES.user(user.uid));
       unsubscribeFirestore = onSnapshot(userRef, (doc) => {
-        if (doc.exists()) {
+        if (doc.exists() && doc.data().settings) {
           setUserData(doc.data().settings as UserData);
         } else {
           // Initialize user document if it doesn't exist

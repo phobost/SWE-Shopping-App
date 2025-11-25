@@ -2,7 +2,8 @@ import { Timestamp } from "firebase/firestore";
 import { Discount } from "./discount";
 import { Product } from "./product";
 
-export interface OrderProduct extends Pick<Product, "id" | "name" | "price"> {
+export interface OrderProduct
+  extends Pick<Product, "id" | "name" | "price" | "salePercentage"> {
   quantityOrdered: number;
 }
 

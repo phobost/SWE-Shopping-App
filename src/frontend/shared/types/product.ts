@@ -5,9 +5,9 @@ export interface Product {
   description: string;
   isAvailable: boolean;
   quantityInStock: number;
+  salePercentage: number;
   body: {
     markdown: string;
     html: string;
   };
-  base64Image: string | null;
 }

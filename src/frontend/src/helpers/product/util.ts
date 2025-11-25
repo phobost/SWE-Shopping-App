@@ -51,3 +51,9 @@ export const getProduct = async (id: string) => {
   }
   return docRef.data();
 };
+
+export const getSalePrice = (
+  product: Pick<Product, "price" | "salePercentage">,
+) => {
+  return product.price - product.price * (product.salePercentage * 0.01);
+};

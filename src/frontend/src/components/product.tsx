@@ -29,7 +29,7 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import { Textarea } from "@/components/ui/textarea";
-import { setProduct } from "@/helpers/product/util";
+import { getSalePrice, setProduct } from "@/helpers/product/util";
 import React from "react";
 import { PartialKeys } from "@tanstack/react-table";
 import { Label } from "./ui/label";
@@ -70,6 +70,9 @@ export function ProductCard({
   showAdminEdit?: boolean;
   editHref?: string;
 }) {
+  const salePrice = getSalePrice(product);
+  const onSale = salePrice !== product.price;
+
   return (
     <div className="relative rounded-lg border bg-card text-card-foreground shadow-xs p-6 space-y-2">
       {showAdminEdit && (
@@ -88,9 +91,29 @@ export function ProductCard({
           </Link>
         </Button>
       )}
-      <h3 className="font-semibold text-lg">
-        {product.name} | {USD.fromNumber(product.price)}
-      </h3>
+      <h3 className="font-semibold text-lg">{product.name}</h3>
+
+      <div className="flex flex-row gap-2">
+        <Badge>
+          <div className={onSale ? "line-through text-red-600" : ""}>
+            {USD.fromNumber(product.price)}
+          </div>
+          {onSale ? (
+            <div className="font-bold text-green-300 dark:text-green-800">
+              {USD.fromNumber(salePrice)}
+            </div>
+          ) : (
+            ""
+          )}
+        </Badge>
+        {onSale ? (
+          <Badge className="bg-emerald-500 dark:bg-emerald-300 font-bold">
+            {product.salePercentage}% off!
+          </Badge>
+        ) : (
+          ""
+        )}
+      </div>
       <p className="text-sm text-muted-foreground">{product.description}</p>
       <p className="text-sm">In Stock: {product.quantityInStock}</p>
       {children && <div className="pt-4">{children}</div>}
@@ -99,18 +122,37 @@ export function ProductCard({
 }
 
 export function ProductDetails({ product }: { product: Product }) {
+  const salePrice = getSalePrice(product);
+  const onSale = salePrice !== product.price;
   return (
     <>
       <div className="pt-4">
-        <h1 className="text-6xl font-bold">
-          {product.name} | {USD.fromNumber(product.price)}
-        </h1>
+        <h1 className="text-6xl font-bold">{product.name}</h1>
+        <div className="flex flex-row gap-2 pt-2 pb-2">
+          <Badge>
+            <div className={onSale ? "line-through text-red-600" : ""}>
+              {USD.fromNumber(product.price)}
+            </div>
+            {onSale ? (
+              <div className="font-bold text-green-300 dark:text-green-800">
+                {USD.fromNumber(salePrice)}
+              </div>
+            ) : (
+              ""
+            )}
+          </Badge>
+          {onSale ? (
+            <Badge className="bg-emerald-500 dark:bg-emerald-300 font-bold">
+              {product.salePercentage}% off!
+            </Badge>
+          ) : (
+            ""
+          )}
+        </div>
         <p className="text-lg text-muted-foreground">{product.description}</p>
-
         <div className="mt-6 flex flex-wrap gap-3">
           <ProductPurchaseButtons product={product} />
         </div>
-
         <div className="pt-8 product-body">
           <div dangerouslySetInnerHTML={{ __html: product.body.html }}></div>
         </div>
@@ -142,7 +184,6 @@ export function ProductEditor({
     : ({
         name: "",
         description: "",
-        base64Image: "",
         price: 0,
         quantityInStock: 0,
         body: {
@@ -161,9 +202,14 @@ export function ProductEditor({
   const [quantityInStock, setQuantityInStock] = React.useState<
     undefined | number
   >(product.quantityInStock);
-  console.log(product.quantityInStock);
   const quantityInStockRepr =
     quantityInStock !== undefined ? quantityInStock : "";
+
+  const [salePercentage, setSalePercentage] = React.useState<
+    undefined | number
+  >(product.salePercentage);
+  const salePercentageRepr = salePercentage !== undefined ? salePercentage : "";
+
   const [markdownBody, setMarkdownBody] = React.useState(product.body.markdown);
   const [htmlBody, setHtmlBody] = React.useState(product.body.html);
   const [isAvailable, setIsAvailable] = React.useState(product.isAvailable);
@@ -201,6 +247,19 @@ export function ProductEditor({
 
       if (quantityInStock < 0) {
         return "Quantity in stock cannot be negative!";
+      }
+    },
+    salePercentage: () => {
+      if (salePercentage === undefined) {
+        return;
+      }
+
+      if (salePercentage < 0) {
+        return "Sale percentage cannot be negative!";
+      }
+
+      if (salePercentage > 100) {
+        return "Sale percentage cannot be more than 100!";
       }
     },
     description: () => {
@@ -242,6 +301,7 @@ export function ProductEditor({
     price: Number(USD.removeSymbols(priceStr)),
     quantityInStock,
     isAvailable,
+    salePercentage: salePercentage || 0,
     body: {
       markdown: markdownBody,
       html: htmlBody,
@@ -302,13 +362,13 @@ export function ProductEditor({
                   <Label htmlFor="airplane-mode">Availble for Purchase</Label>
                 </Field>
               </Field>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 gap-12 place-items-center justify-items-stretch place-items-start ">
                 <div>
                   <Field>
                     <FieldLabel htmlFor="product-price-field">
                       Product Price
                     </FieldLabel>
-                    <InputGroup>
+                    <InputGroup className="max-w-40">
                       <InputGroupAddon>
                         <InputGroupText>$</InputGroupText>
                       </InputGroupAddon>
@@ -352,8 +412,8 @@ export function ProductEditor({
                         <InputGroupText>USD</InputGroupText>
                       </InputGroupAddon>
                     </InputGroup>
+                    <ValidationError msg={validate.price()} />
                   </Field>
-                  <ValidationError msg={validate.price()} />
                 </div>
 
                 <div>
@@ -367,12 +427,10 @@ export function ProductEditor({
                           type="button"
                           variant="outline"
                           onClick={() => {
-                            console.log(quantityInStock);
                             let newQuant =
                               (quantityInStock ? quantityInStock : 0) - 1;
                             newQuant = Math.max(newQuant, 0);
 
-                            console.log("After", newQuant);
                             setQuantityInStock(newQuant);
                           }}
                         >
@@ -415,12 +473,71 @@ export function ProductEditor({
                         </Button>
                       </InputGroup>
                     </div>
+
+                    <ValidationError msg={validate.quantityInStock()} />
                   </Field>
-                  <ValidationError msg={validate.quantityInStock()} />
                 </div>
                 <div>
-                  <Field></Field>
-                  <ValidationError msg={validate.quantityInStock()} />
+                  <Field>
+                    <FieldLabel htmlFor="product-quantity-field">
+                      Sale Percentage
+                    </FieldLabel>
+                    <div
+                      className={`flex flex-row min-w-30 max-w-40  ${salePercentage === undefined ? "" : salePercentage > 0 ? "text-purple-800 dark:text-purple-300 font-bold" : ""}`}
+                    >
+                      <InputGroup>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            let newQuant =
+                              (salePercentage ? salePercentage : 0) - 1;
+                            newQuant = Math.max(newQuant, 0);
+
+                            setSalePercentage(newQuant);
+                          }}
+                        >
+                          <CircleMinusIcon />
+                        </Button>
+                        <InputGroupInput
+                          id="product-quantity-field"
+                          required
+                          value={salePercentageRepr}
+                          className="text-center"
+                          placeholder="0"
+                          step="1"
+                          inputMode="numeric"
+                          onChange={(e) => {
+                            const val = e.target.value.trim();
+                            if (val == "") {
+                              setSalePercentage(undefined);
+                              return;
+                            }
+
+                            const newQuantity = Number(val);
+                            if (isNaN(newQuantity)) {
+                              return;
+                            }
+
+                            setSalePercentage(newQuantity);
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            const newQuant =
+                              (salePercentage ? salePercentage : 0) + 1;
+
+                            setSalePercentage(Math.max(newQuant, 100));
+                          }}
+                        >
+                          <CirclePlusIcon />
+                        </Button>
+                      </InputGroup>
+                    </div>
+                    <ValidationError msg={validate.salePercentage()} />
+                  </Field>
                 </div>
               </div>
               <Field>

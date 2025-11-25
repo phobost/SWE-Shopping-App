@@ -15,6 +15,8 @@ import { OrderProduct, OrderStatus } from "@shared/types/order.ts";
 import { useProducts } from "@/helpers/product/context.tsx";
 import { firestore } from "@/helpers/firebaseConfig.ts";
 import { Product } from "@shared/types/product.ts";
+import { USD } from "@/lib/utils.ts";
+import { getSalePrice } from "@/helpers/product/util.ts";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutWithOrderProvider,
@@ -203,7 +205,7 @@ function PaymentForm({
         >
           {isProcessing
             ? "Processing..."
-            : `Pay $${totalAmount.toFixed(2)} & Place Order`}
+            : `Pay ${USD.fromNumber(totalAmount)} & Place Order`}
         </Button>
       </form>
     </div>
@@ -220,7 +222,7 @@ function Checkout() {
   const productsContext = useProducts();
 
   const cartSubtotal = cartProducts.reduce(
-    (total, product) => total + product.price * product.cartQuantity,
+    (total, product) => total + getSalePrice(product) * product.cartQuantity,
     0,
   );
 
@@ -255,7 +257,7 @@ function Checkout() {
 
         setAppliedDiscount(calculatedDiscountAmount);
         setDiscountMessage(
-          `Success! ${percentValue}% discount applied (saves $${calculatedDiscountAmount.toFixed(2)}).`,
+          `Success! ${percentValue}% discount applied (saves ${USD.fromNumber(calculatedDiscountAmount)}).`,
         );
       }
     } catch (error) {
@@ -286,6 +288,7 @@ function Checkout() {
           name: cProduct.name,
           price: cProduct.price,
           quantityOrdered: cProduct.cartQuantity,
+          salePercentage: cProduct.salePercentage,
         };
       });
       const updatedProducts: Product[] = cartProducts.map((cProduct) => {
@@ -307,10 +310,6 @@ function Checkout() {
             timestamp: Timestamp.now(),
           });
 
-        const products = productsContext.data.filter((product) =>
-          orderProducts.find((orderProduct) => orderProduct.id == product.id),
-        );
-
         const productTransaction =
           productsContext.firestore.transact(transaction);
 
@@ -318,12 +317,12 @@ function Checkout() {
           productTransaction.update(product);
         });
 
-        console.log(">>>", products);
         console.log("Order successfully placed with ID:", created.id);
-        toast.success(
-          `Order Placed! Total: $${finalCartTotal.toFixed(2)}. Order ID: '${created.id}'`,
-        );
         await clearCart();
+        toast.success(
+          `Order Placed! Total: ${USD.fromNumber(finalCartTotal)}. Order ID: '${created.id}'`,
+        );
+        return redirect({ to: "/orders" });
       });
     } catch (error) {
       console.error("Error processing order:", error);
@@ -368,23 +367,25 @@ function Checkout() {
             <div className="space-y-2 pt-4 border-t">
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Subtotal:</span>
-                <span className="font-medium">${cartSubtotal.toFixed(2)}</span>
+                <span className="font-medium">
+                  {USD.fromNumber(cartSubtotal)}
+                </span>
               </div>
 
               <div className="flex justify-between text-sm">
                 <span className="font-medium">Tax:</span>
-                <span className="font-medium">${cartTax.toFixed(2)}</span>
+                <span className="font-medium">{USD.fromNumber(cartTax)}</span>
               </div>
               {appliedDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-600 font-medium">
                   <span>Discount Applied:</span>
-                  <span>-${appliedDiscount.toFixed(2)}</span>
+                  <span>-{USD.fromNumber(appliedDiscount)}</span>
                 </div>
               )}
               <div className="pt-2 border-t flex justify-between items-center text-lg font-bold">
                 <span className="font-semibold">Order Total:</span>
                 <span className="font-semibold">
-                  ${finalCartTotal.toFixed(2)}
+                  {USD.fromNumber(finalCartTotal)}
                 </span>
               </div>
             </div>
