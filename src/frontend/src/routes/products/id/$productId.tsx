@@ -38,6 +38,7 @@ export const Route = createFileRoute("/products/id/$productId")({
 
 function ProductDetails() {
   const { product } = Route.useLoaderData();
+  const isAvailable = product.isAvailable !== false;
 
   // TODO: Include the image of the product
   return (
@@ -53,12 +54,18 @@ function ProductDetails() {
           </h1>
           <p className="text-lg text-muted-foreground">{product.description}</p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild>
-              <Link to="/checkout">Buy Now</Link>
-            </Button>
-            <AddProductToCardButton product={product} />
-          </div>
+          {isAvailable ? (
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <Link to="/checkout">Buy Now</Link>
+              </Button>
+              <AddProductToCardButton product={product} />
+            </div>
+          ) : (
+            <div className="mt-6">
+              <p className="text-sm text-muted-foreground">This product is no longer available for purchase.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

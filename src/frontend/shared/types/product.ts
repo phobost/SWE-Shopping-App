@@ -5,4 +5,5 @@ export interface Product {
   description: string;
   quantityInStock: number;
   base64Image: string | null;
+  isAvailable?: boolean;
 }

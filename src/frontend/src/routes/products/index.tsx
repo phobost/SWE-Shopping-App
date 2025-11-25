@@ -60,6 +60,11 @@ function RouteComponent() {
     return <div>Error: {error}</div>;
   }
 
+  // Only show products that are available (or missing the flag, for old data)
+  const visibleProducts = data.filter(
+    (product) => product.isAvailable !== false,
+  );
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center space-y-4">
@@ -67,7 +72,7 @@ function RouteComponent() {
       </div>
 
       <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {data.map((product) => (
+        {visibleProducts.map((product) => (
           <ProductCard
             product={product}
             key={product.id}
