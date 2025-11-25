@@ -20,7 +20,6 @@ export const Route = createFileRoute("/products/")({
   component: RouteComponent,
 });
 
-
 function RouteComponent() {
   const context = useAuthContext();
   const isAdmin = context.isAdmin();

@@ -1,13 +1,19 @@
 // functions/index.js
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { onCall, HttpsError, CallableRequest } from "firebase-functions/v2/https";
+import {
+  onCall,
+  HttpsError,
+  CallableRequest,
+} from "firebase-functions/v2/https";
 import { GetUserRequest, GetUserResponse } from "shared/functions/types";
 
 initializeApp();
 
 export const getUser = onCall<GetUserRequest>(
-  async (request: CallableRequest<GetUserRequest>): Promise<GetUserResponse> => {
+  async (
+    request: CallableRequest<GetUserRequest>,
+  ): Promise<GetUserResponse> => {
     const { data, auth } = request;
     if (!auth || auth.token.role !== "admin") {
       throw new HttpsError("permission-denied", "Unauthorized");
