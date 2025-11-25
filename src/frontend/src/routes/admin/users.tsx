@@ -40,7 +40,7 @@ interface UserWithRole {
   email?: string;
   displayName?: string;
   metadata: UserRecord["metadata"];
-  customClaims?: Record<string, any>;
+  customClaims?: Record<string, unknown>;
   isAdmin: boolean;
 }
 
@@ -186,7 +186,6 @@ function InnerComponent() {
     fetchUsers();
   }, []);
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: users,
     columns,
