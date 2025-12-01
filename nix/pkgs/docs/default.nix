@@ -9,6 +9,9 @@ let
     proposal = callPackage ./proposal/package.nix {
       architecture = packages.architecture;
     };
+    report = callPackage ./report/package.nix {
+      architecture = packages.architecture;
+    };
     architecture = callPackage ./architecture/package.nix { };
     project = callPackage ./project/package.nix { };
   };
