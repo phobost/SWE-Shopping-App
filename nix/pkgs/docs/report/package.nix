@@ -19,7 +19,7 @@ pkgs.stdenvNoCC.mkDerivation {
   TYPST_FONT_PATHS = pkgs.lib.concatStringsSep ":" fonts;
   buildPhase = ''
     cp "${architecture}/arch.svg" assets/architecture-diagram.svg
-    typst compile *.typ proposal.pdf;
+    typst compile *.typ report.pdf;
   '';
   installPhase = ''
     mkdir -p "$out"
