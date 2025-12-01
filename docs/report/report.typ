@@ -345,7 +345,7 @@ Note that orders are stored under each user element and then a grouped query is 
 
 
 #block(breakable: false)[
-  = Changes from Proposal
+  = Changes From Proposal
   In our initial proposal we intended to build a full backend in Python for most of the data handling. One of our members joined late and gave an alternative proposition of using Firebase due to their prior experience with the platform. This eventually resulted in the complete removal of any Python backend and SQL data storage, instead opting to use Firebase’s Firestore, Storage, and Authentication services. This decision largely wiped out writing most backend code as Firebase handles almost all significant backend services for us.
 
   If you compare our project proposal's architecture diagram to the architecture diagram provided in this report, you'll notice a massive difference in where complexity is located. Firebase moved much of the complexity towards the frontend as we could focus more of our effort towards it due less work being required on the backend. The only significant backend component that survived the switch to Firebase was the "Product Page Service", which is the "Phobost API" in this report's software architecture diagram.
