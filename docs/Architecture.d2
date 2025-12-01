@@ -1,6 +1,5 @@
 vars: {
   d2-config: {
-    # layout-engine: elk
     theme-id: 200
   }
 }
@@ -23,45 +22,57 @@ Clients: {
 }
 
 Frontend: {
-  shape: rectangle
   label: "Frontend\n(React, TypeScript)"
-
-  "src/": {
-    grid-rows: 2
-    "App.tsx": {
-      label: "App.tsx\n(Entry Point)"
-    }
-    "index.tsx"
-    "components/"
-    "pages/"
-    etc
+  grid-rows: 2
+  index
+  signin
+  signup
+  orders
+  checkout
+  products: {
+    index
+    create
+    "id/{product id}"
+  }
+  admin: {
+    discounts
+    orders
+    users
   }
 }
 
-Backend: Backend {
-  # grid-columns: 1
-  Router: app.py\n(API Router)
-
-  Router -> Services: Routes requests to
-
-  Services: {
-    grid-rows: 2
-    grid-columns: 3
-    Authentication Service
-    Product Service
-    Cart Service
-    Checkout Service
-    Product Page Service
-    Image Storage Service
+Backend: {
+  Phobost API: {
+    /v1/health
+    /v1/md2html
+  }
+  Firebase: {
+    Firestore API
+    Storage API
+    Authentication API
   }
 }
 
-Database: SQLite Database {
+Firebase Storage: {
   shape: cylinder
+}
+
+Firestore: {
+  shape: cylinder
+}
+
+Firebase Authentication: {
+  shape: Person
 }
 
 # Primary Connections
 Clients -> Frontend: "Renders UI"
 
-Frontend -> Backend: "API Calls"
-Backend.Services -> Database: "Read/Write"
+Frontend -> Backend.Firebase: "Signs in or signs out users"
+Frontend -> Backend.Firebase: "Stores product images"
+Frontend -> Backend.Firebase: "General storage, product listings, orders, discounts, etc."
+Frontend -> Backend.Phobost API: "Converts product page markdown to HTML"
+
+Backend.Firebase.Firestore API -> Firestore
+Backend.Firebase.Storage API -> Firebase Storage
+Backend.Firebase.Authentication API -> Firebase Authentication
