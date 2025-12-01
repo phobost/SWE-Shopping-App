@@ -195,7 +195,7 @@ Helped with parts of the shopping cart pop-up, and helped fix multiple issues in
 
 = Technologies Used
 
-- Database: Firebase
+- Database: Firebase's Firestore & Storage
 - Backend: Firebase, Rust + Axum
 - Frontend: React, Typescript, HTML, CSS
 - CI/CD: Nix
